@@ -24,9 +24,9 @@ exports.users = (req, res) => {
 // get one user with id or set other conditions later
 
 exports.user = (req, res) => {
-  const id = req.query.id;
+  const id = req.body.id;
   var condition = { id: id };
-  User.findAll({ where: condition })
+  User.findAll({ where: condition})
     .then((data) => {
       res.send(data);
     })
@@ -48,6 +48,7 @@ exports.signup = (req, res) => {
       lastname: req.body.lastname,
       email: req.body.email,
       password: hash,
+      job: req.body.job
     };
 
     User.create(user)
