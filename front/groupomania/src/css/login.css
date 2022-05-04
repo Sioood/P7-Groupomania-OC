@@ -1,0 +1,76 @@
+h1 {
+  color: black;
+}
+
+#user{
+  margin: 5vh 0 5vh 0;
+  height: 200px;
+}
+
+.connection{
+  width: 450px;
+}
+
+.form{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+
+input, .input{
+  all: unset;
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  text-align: left;
+  padding: 5px 30px 5px 30px;
+  height: 55px;
+  /* border: 2px var(--accent-color) solid; */
+  background: var(--third-color);
+  border-radius: 5px;
+}
+
+.wrapper-submit{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#type-of-connection{
+  width: 60%;
+  color: var(--accent-color);
+}
+
+#submit{
+  width: 40%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  background: var(--main-color);
+  /* set opacity to 50% if the form input is not filled */
+  color: var(--third-color);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.wrapper-name{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.wrapper-name > input{
+  width: 100%;
+}
