@@ -4,12 +4,18 @@
     <div class="login">
       <form id="form-login" class="form" method="get">
         <div v-if="$store.state.authMethod === 'Signup'" class="wrapper-name">
-          <input id="name" type="name" placeholder="name" />
-          <input id="lastname" type="lastname" placeholder="lastname" />
+          <input id="name" ref="name" type="name" placeholder="name" />
+          <input
+            id="lastname"
+            ref="lastname"
+            type="lastname"
+            placeholder="lastname"
+          />
         </div>
         <select
           v-if="$store.state.authMethod === 'Signup'"
           id="job"
+          ref="job"
           class="input"
         >
           <option v-for="item in job" :key="item.name" :value="item.name">
@@ -61,13 +67,21 @@ export default {
     ...mapActions(["swapAuth"]),
     auth() {
       const auth = this.$store.state.authMethod;
-      console.log(auth);
       const form = {};
       if (this.$refs.email.value && this.$refs.password.value) {
         if (auth == "Login") {
           const form = {
             email: this.$refs.email.value,
             password: this.$refs.password.value,
+          };
+          this.$store.dispatch("auth", form);
+        } else {
+          const form = {
+            name: this.$refs.name.value,
+            lastname: this.$refs.lastname.value,
+            email: this.$refs.email.value,
+            password: this.$refs.password.value,
+            job: this.$refs.job.value,
           };
           this.$store.dispatch("auth", form);
         }

@@ -31,7 +31,6 @@ export default new Vuex.Store({
             router.push("/home");
             return response.json();
           }
-          return Promise.reject(response);
         });
       } else if (state.authMethod === "Signup") {
         fetch("http://localhost:3000/api/auth/signup", {
@@ -41,7 +40,12 @@ export default new Vuex.Store({
             "Content-Type": "application/json",
           },
           body: JSON.stringify(form),
-        }).then((response) => response.json());
+        }).then((response) => {
+          if (response.ok) {
+            router.push("/home");
+            return response.json();
+          }
+        });
       }
       alert("auth" + JSON.stringify(form));
     },
