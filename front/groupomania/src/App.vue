@@ -1,22 +1,24 @@
 <template>
   <div id="app">
-    <img id="user" src="./assets/Groupomania-user.svg" alt="groupomania user" />
-    <LoginPage />
+    <nav v-if="nav === true">
+      <router-link to="/auth" class="nav-button">Auth</router-link>
+      <router-link to="/signup">signup</router-link>
+    </nav>
+    <router-view />
   </div>
 </template>
 
-<script>
-import LoginPage from "./components/LoginPage.vue";
+<style>
+@import "./css/main.css";
+@import "./css/auth.css";
+</style>
 
+<script>
 export default {
-  name: "App",
-  components: {
-    LoginPage,
+  data() {
+    return {
+      nav: true,
+    };
   },
 };
 </script>
-
-<style>
-@import "./css/main.css";
-@import "./css/login.css";
-</style>

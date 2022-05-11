@@ -1,13 +1,9 @@
-h1 {
-  color: black;
-}
-
 #user{
   margin: 5vh 0 5vh 0;
   height: 200px;
 }
 
-.connection{
+.auth{
   width: 450px;
 }
 
@@ -47,6 +43,8 @@ input, .input{
 #type-of-connection{
   width: 60%;
   color: var(--accent-color);
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 #submit{
