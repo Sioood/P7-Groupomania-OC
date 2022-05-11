@@ -1,13 +1,13 @@
-#user{
+#user {
   margin: 5vh 0 5vh 0;
   height: 200px;
 }
 
-.auth{
+.auth {
   width: 450px;
 }
 
-.form{
+.form {
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -16,7 +16,8 @@
   gap: 15px;
 }
 
-input, .input{
+input,
+.input {
   all: unset;
   box-sizing: border-box;
   width: 100%;
@@ -32,7 +33,7 @@ input, .input{
   border-radius: 5px;
 }
 
-.wrapper-submit{
+.wrapper-submit {
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -40,14 +41,14 @@ input, .input{
   justify-content: space-between;
 }
 
-#type-of-connection{
+#type-of-connection {
   width: 60%;
   color: var(--accent-color);
   text-decoration: underline;
   cursor: pointer;
 }
 
-#submit{
+#submit {
   width: 40%;
   display: flex;
   flex-direction: row;
@@ -60,7 +61,7 @@ input, .input{
   cursor: pointer;
 }
 
-.wrapper-name{
+.wrapper-name {
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -69,6 +70,6 @@ input, .input{
   gap: 15px;
 }
 
-.wrapper-name > input{
+.wrapper-name > input {
   width: 100%;
 }

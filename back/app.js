@@ -29,10 +29,10 @@ app.use((req, res, next) => {
 
 // paths routes
 const userRoutes = require("./routes/user");
-// const postRoutes = require("./routes/post");
+const postRoutes = require("./routes/post");
 
 // base path for routes
 app.use("/api/auth", userRoutes);
-// app.use("/api/post", postRoutes);
+app.use("/api/post", postRoutes);
 
 module.exports = app;

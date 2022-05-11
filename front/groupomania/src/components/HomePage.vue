@@ -1,10 +1,11 @@
-<template><h1>Redirect</h1></template>
+<template>
+  <div class="home">
+    <h1>Hello World</h1>
+  </div>
+</template>
 
 <script>
 export default {
   name: "HomePage",
-  beforeCreate() {
-    this.$router.push("/auth");
-  },
 };
 </script>

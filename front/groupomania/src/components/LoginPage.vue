@@ -18,6 +18,7 @@
           ref="job"
           class="input"
         >
+          <option selected disabled hidden>Job</option>
           <option v-for="item in job" :key="item.name" :value="item.name">
             {{ item.name }}
           </option>
@@ -60,7 +61,7 @@ export default {
   name: "LoginPage",
   data() {
     return {
-      job: [{ name: "Job" }, { name: "dev" }, { name: "graphiste" }],
+      job: [{ name: "RH" }, { name: "dev" }, { name: "graphiste" }],
     };
   },
   methods: {

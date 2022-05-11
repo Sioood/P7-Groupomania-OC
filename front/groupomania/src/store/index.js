@@ -47,7 +47,6 @@ export default new Vuex.Store({
           }
         });
       }
-      alert("auth" + JSON.stringify(form));
     },
   },
   actions: {

@@ -1,6 +1,5 @@
 <template>
-  <div class="signup">
-    <img id="user" src="@/assets/Groupomania-user.svg" alt="groupomania user" />
+  <div class="home">
     <HomePage />
   </div>
 </template>
