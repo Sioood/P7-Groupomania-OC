@@ -60,12 +60,19 @@ export default {
   methods: {
     ...mapActions(["swapAuth"]),
     auth() {
-      const form = {
-        email: this.$refs.email.value,
-        password: this.$refs.password.value,
-      };
+      const auth = this.$store.state.authMethod;
+      console.log(auth);
+      const form = {};
+      if (this.$refs.email.value && this.$refs.password.value) {
+        if (auth == "Login") {
+          const form = {
+            email: this.$refs.email.value,
+            password: this.$refs.password.value,
+          };
+          this.$store.dispatch("auth", form);
+        }
+      }
       console.log(form);
-      this.$store.dispatch("auth", form);
     },
   },
 };

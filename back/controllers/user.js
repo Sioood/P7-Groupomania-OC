@@ -78,7 +78,7 @@ exports.login = (req, res, next) => {
       bcrypt.compare(req.body.password, user.password)
         .then(valid => {
           if (!valid) {
-            return res.status(401).json({ error: 'Wrong password !' });
+            return res.status(403).json({ error: 'Wrong password !' });
           }
           // give a token which expire after 24h
           res.status(200).json({

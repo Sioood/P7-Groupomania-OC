@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import router from "@/router";
 
 Vue.use(Vuex);
 
@@ -25,9 +26,22 @@ export default new Vuex.Store({
             "Content-Type": "application/json",
           },
           body: JSON.stringify(form),
-        }).then((response) => response.json());
+        }).then((response) => {
+          if (response.ok) {
+            router.push("/home");
+            return response.json();
+          }
+          return Promise.reject(response);
+        });
       } else if (state.authMethod === "Signup") {
-        alert("signup");
+        fetch("http://localhost:3000/api/auth/signup", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(form),
+        }).then((response) => response.json());
       }
       alert("auth" + JSON.stringify(form));
     },
