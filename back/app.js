@@ -18,6 +18,15 @@ database.sequelize.sync()
 .then((console.log("connected to the BDD")))
 .catch(error => console.log(error))
 
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+  // Header for same source helmet images
+  res.setHeader('Cross-Origin-Resource-Policy', 'same-site');
+  next();
+});
+
 // paths routes
 const userRoutes = require("./routes/user");
 // const postRoutes = require("./routes/post");

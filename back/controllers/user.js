@@ -68,10 +68,11 @@ exports.signup = (req, res) => {
 
 exports.login = (req, res, next) => {
   // find email for user
-  User.findOne({ email: req.body.email })
+  const condition = {email: req.body.email};
+  User.findOne({ where: condition })
     .then(user => {
       if (!user) {
-        return res.status(401).json({ error: 'No such user !' });
+        return res.status(401).json({ error: 'No such user !'});
       }
       // compare password
       bcrypt.compare(req.body.password, user.password)
