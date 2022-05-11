@@ -20,21 +20,27 @@
           type="text"
           name="email"
           id="email"
+          ref="email"
           placeholder="groupomania@social.network"
         />
         <input
           type="password"
           name="password"
           id="password"
+          ref="password"
           placeholder="password"
-          @click="auth()"
         />
         <div class="wrapper-submit">
           <!-- <a & button> refresh the page div don't reload but for aria is not good maybe prevent default -->
           <div id="type-of-connection" @click="swapAuth()">
             {{ $store.state.otherMethod }}
           </div>
-          <input id="submit" type="submit" :value="$store.state.authMethod" />
+          <input
+            @click.prevent="auth()"
+            id="submit"
+            type="submit"
+            :value="$store.state.authMethod"
+          />
         </div>
       </form>
     </div>
@@ -52,7 +58,15 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["swapAuth", "auth"]),
+    ...mapActions(["swapAuth"]),
+    auth() {
+      const form = {
+        email: this.$refs.email.value,
+        password: this.$refs.password.value,
+      };
+      console.log(form);
+      this.$store.dispatch("auth", form);
+    },
   },
 };
 </script>

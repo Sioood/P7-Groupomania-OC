@@ -16,20 +16,28 @@ export default new Vuex.Store({
         state.otherMethod = "signup";
       }
     },
-    AUTH(state) {
+    AUTH(state, form) {
       if (state.authMethod === "Login") {
-        alert("login");
+        fetch("http://localhost:3000/api/auth/login", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(form),
+        }).then((response) => response.json());
       } else if (state.authMethod === "Signup") {
         alert("signup");
       }
+      alert("auth" + JSON.stringify(form));
     },
   },
   actions: {
     swapAuth(context) {
       context.commit("SWAP_AUTH");
     },
-    auth(context) {
-      context.commit("AUTH");
+    auth(context, form = { form: null }) {
+      context.commit("AUTH", form);
     },
   },
   modules: {},
