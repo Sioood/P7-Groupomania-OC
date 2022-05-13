@@ -5,7 +5,7 @@ import router from "@/router";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-  state: { authMethod: "Login", otherMethod: "signup" },
+  state: { authMethod: "Login", otherMethod: "signup", authError: "" },
   getters: {},
   mutations: {
     SWAP_AUTH(state) {
@@ -29,7 +29,12 @@ export default new Vuex.Store({
         }).then((response) => {
           if (response.ok) {
             router.push("/home");
-            return response.json();
+            state.authError = "";
+          } else if (response.status == 401) {
+            state.authError = "Il n'y a pas de compte associé à cet email.";
+          } else if (response.status == 403) {
+            state.authError =
+              "Le mot de passe ne correspond pas à l'email associé.";
           }
         });
       } else if (state.authMethod === "Signup") {
@@ -43,7 +48,6 @@ export default new Vuex.Store({
         }).then((response) => {
           if (response.ok) {
             router.push("/home");
-            return response.json();
           }
         });
       }

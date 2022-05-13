@@ -24,7 +24,7 @@ exports.users = (req, res) => {
 // get one user with id or set other conditions later
 
 exports.user = (req, res) => {
-  const id = req.body.id;
+  const id = req.params.id;
   var condition = { id: id };
   User.findAll({ where: condition})
     .then((data) => {
@@ -58,7 +58,7 @@ exports.signup = (req, res) => {
       .catch((err) => {
         res.status(500).send({
           message:
-            err.message || "Some error occurred while creating the Tutorial.",
+            err.message || "Some error occurred while creating the User.",
         });
       });
   });

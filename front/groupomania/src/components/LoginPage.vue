@@ -4,12 +4,19 @@
     <div class="login">
       <form id="form-login" class="form" method="get">
         <div v-if="$store.state.authMethod === 'Signup'" class="wrapper-name">
-          <input id="name" ref="name" type="name" placeholder="name" />
+          <input
+            id="name"
+            ref="name"
+            type="name"
+            placeholder="name"
+            @keydown="clearError()"
+          />
           <input
             id="lastname"
             ref="lastname"
             type="lastname"
             placeholder="lastname"
+            @keydown="clearError()"
           />
         </div>
         <select
@@ -29,6 +36,7 @@
           id="email"
           ref="email"
           placeholder="groupomania@social.network"
+          @keydown="clearError()"
         />
         <input
           type="password"
@@ -36,7 +44,9 @@
           id="password"
           ref="password"
           placeholder="password"
+          @keydown="clearError()"
         />
+        <h3 id="error">{{ $store.state.authError }}</h3>
         <div class="wrapper-submit">
           <!-- <a & button> refresh the page div don't reload but for aria is not good maybe prevent default -->
           <div id="type-of-connection" @click="swapAuth()">
@@ -67,16 +77,21 @@ export default {
   methods: {
     ...mapActions(["swapAuth"]),
     auth() {
+      const emptyLogin = this.$refs.email.value && this.$refs.password.value;
       const auth = this.$store.state.authMethod;
-      const form = {};
-      if (this.$refs.email.value && this.$refs.password.value) {
-        if (auth == "Login") {
-          const form = {
-            email: this.$refs.email.value,
-            password: this.$refs.password.value,
-          };
-          this.$store.dispatch("auth", form);
-        } else {
+      if (auth == "Login" && emptyLogin) {
+        const form = {
+          email: this.$refs.email.value,
+          password: this.$refs.password.value,
+        };
+        this.$store.dispatch("auth", form);
+        return;
+      } else if (auth == "Signup") {
+        const emptySignup =
+          this.$refs.name.value &&
+          this.$refs.lastname.value &&
+          this.$refs.job.value != "Job" + emptyLogin;
+        if (emptySignup) {
           const form = {
             name: this.$refs.name.value,
             lastname: this.$refs.lastname.value,
@@ -85,9 +100,13 @@ export default {
             job: this.$refs.job.value,
           };
           this.$store.dispatch("auth", form);
+          return;
         }
       }
-      console.log(form);
+      this.$store.state.authError = "Veuillez remplir tout les champs.";
+    },
+    clearError() {
+      this.$store.state.authError = "";
     },
   },
 };
