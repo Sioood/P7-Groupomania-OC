@@ -77,29 +77,45 @@ export default {
   methods: {
     ...mapActions(["swapAuth"]),
     auth() {
+      // regex
+      const regexMail = /([a-zA-Z0-9-_.]{5,})@([a-zA-Z]+)\.([a-zA-Z]{2,9})/;
+
+      // empty validator for login inputs
       const emptyLogin = this.$refs.email.value && this.$refs.password.value;
+      const regexLogin = this.$refs.email.value.match(regexMail);
+
       const auth = this.$store.state.authMethod;
+
       if (auth == "Login" && emptyLogin) {
-        const form = {
-          email: this.$refs.email.value,
-          password: this.$refs.password.value,
-        };
-        this.$store.dispatch("auth", form);
+        if (regexLogin) {
+          const form = {
+            email: this.$refs.email.value,
+            password: this.$refs.password.value,
+          };
+          this.$store.dispatch("auth", form);
+          return;
+        }
+        this.$store.state.authError = "Veuillez rentrer un email valide.";
         return;
       } else if (auth == "Signup") {
+        // empty validator for signup + login inputs
         const emptySignup =
           this.$refs.name.value &&
           this.$refs.lastname.value &&
           this.$refs.job.value != "Job" + emptyLogin;
         if (emptySignup) {
-          const form = {
-            name: this.$refs.name.value,
-            lastname: this.$refs.lastname.value,
-            email: this.$refs.email.value,
-            password: this.$refs.password.value,
-            job: this.$refs.job.value,
-          };
-          this.$store.dispatch("auth", form);
+          if (regexLogin) {
+            const form = {
+              name: this.$refs.name.value,
+              lastname: this.$refs.lastname.value,
+              email: this.$refs.email.value,
+              password: this.$refs.password.value,
+              job: this.$refs.job.value,
+            };
+            this.$store.dispatch("auth", form);
+            return;
+          }
+          this.$store.state.authError = "Veuillez rentrer un email valide.";
           return;
         }
       }

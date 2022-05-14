@@ -1,11 +1,17 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
+import PageNotFound from "../components/PageNotFound.vue";
 import StartView from "../views/StartView.vue";
 import HomeView from "../views/HomeView.vue";
 
 Vue.use(VueRouter);
 
 const routes = [
+  {
+    path: "*",
+    name: "404",
+    component: PageNotFound,
+  },
   {
     path: "/",
     name: "start",

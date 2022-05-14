@@ -26,17 +26,22 @@ export default new Vuex.Store({
             "Content-Type": "application/json",
           },
           body: JSON.stringify(form),
-        }).then((response) => {
-          if (response.ok) {
+        })
+          .then((response) => {
+            if (response.ok) {
+              state.authError = "";
+              return response.json();
+            } else if (response.status == 401) {
+              state.authError = "Il n'y a pas de compte associé à cet email.";
+            } else if (response.status == 403) {
+              state.authError =
+                "Le mot de passe ne correspond pas à l'email associé.";
+            }
+          })
+          .then((data) => {
+            localStorage.setItem("token", data.token);
             router.push("/home");
-            state.authError = "";
-          } else if (response.status == 401) {
-            state.authError = "Il n'y a pas de compte associé à cet email.";
-          } else if (response.status == 403) {
-            state.authError =
-              "Le mot de passe ne correspond pas à l'email associé.";
-          }
-        });
+          });
       } else if (state.authMethod === "Signup") {
         fetch("http://localhost:3000/api/auth/signup", {
           method: "POST",

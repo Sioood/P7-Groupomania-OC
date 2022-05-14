@@ -1,7 +1,7 @@
 <template>
   <div id="home">
-    <h1>Hello World</h1>
-    <div id="dashboard">
+    <h1 @click="test()">Hello World</h1>
+    <div v-if="token" id="dashboard">
       <div id="feed">
         <div class="post">
           <img
@@ -43,6 +43,26 @@
 <script>
 export default {
   name: "HomePage",
+  data() {
+    return {
+      token: true,
+    };
+  },
+  // beforeCreate() {
+  //   fetch("http://localhost:3000/api/post/", {
+  //     headers: {
+  //       Authorization: "Bearer " + localStorage.getItem("token"),
+  //     },
+  //   }).then((response) => {
+  //     if (response.ok) {
+  //       this.token = true;
+  //       alert("hello");
+  //       return response.json();
+  //     } else {
+  //       alert("nope");
+  //     }
+  //   });
+  // },
 };
 </script>
 

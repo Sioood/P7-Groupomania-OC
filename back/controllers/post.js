@@ -19,7 +19,7 @@ exports.getAll = (req, res) => {
 // get one post
 
 exports.getOne = (req, res) => {
-  const id = req.body.id;
+  const id = req.params.id;
   var condition = { id: id };
   Post.findAll({ where: condition })
     .then((data) => {
@@ -45,7 +45,7 @@ exports.create = (req, res) => {
   const post = {
     caption: req.body.caption,
     imgUrl: req.body.imgUrl,
-    UserId: req.body.userId,
+    UserId: req.auth.userId,
     InCommentId: req.body.InCommentId,
   };
 
