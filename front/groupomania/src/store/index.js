@@ -18,7 +18,7 @@ export default new Vuex.Store({
       }
     },
     AUTH(state, form) {
-      if (state.authMethod === "Login") {
+      function login() {
         fetch("http://localhost:3000/api/auth/login", {
           method: "POST",
           headers: {
@@ -42,7 +42,8 @@ export default new Vuex.Store({
             localStorage.setItem("token", data.token);
             router.push("/home");
           });
-      } else if (state.authMethod === "Signup") {
+      }
+      function signup() {
         fetch("http://localhost:3000/api/auth/signup", {
           method: "POST",
           headers: {
@@ -52,9 +53,16 @@ export default new Vuex.Store({
           body: JSON.stringify(form),
         }).then((response) => {
           if (response.ok) {
-            router.push("/home");
+            login();
+            // state.authError =
+            //   "Veuillez vérifier vos identifiants et valider pour poursuivre l'authentification.";
           }
         });
+      }
+      if (state.authMethod === "Login") {
+        login();
+      } else if (state.authMethod === "Signup") {
+        signup();
       }
     },
   },

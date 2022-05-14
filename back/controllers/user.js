@@ -4,7 +4,7 @@ const User = db.user;
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-// verify token and throw userId
+// verify token and throw
 
 exports.token = (req, res) => {
   const id = req.auth.userId;

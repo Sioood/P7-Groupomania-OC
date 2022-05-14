@@ -28,7 +28,13 @@ export default {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },
     }).then((response) => {
-      if (!response.ok) {
+      if (response.ok) {
+        if (router.currentRoute.path == "/home") {
+          return;
+        } else if (router.currentRoute.path == "/auth") {
+          router.push("/home");
+        }
+      } else {
         if (router.currentRoute.path == "/auth") {
           return;
         }

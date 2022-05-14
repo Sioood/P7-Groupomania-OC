@@ -102,7 +102,8 @@ export default {
         const emptySignup =
           this.$refs.name.value &&
           this.$refs.lastname.value &&
-          this.$refs.job.value != "Job" + emptyLogin;
+          this.$refs.job.value != "Job" &&
+          emptyLogin;
         if (emptySignup) {
           if (regexLogin) {
             const form = {
