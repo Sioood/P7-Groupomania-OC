@@ -77,7 +77,6 @@ export default {
   methods: {
     ...mapActions(["swapAuth"]),
     auth() {
-      console.log(this.name);
       // regex
       const regexMail = /([a-zA-Z0-9-_.]{5,})@([a-zA-Z]+)\.([a-zA-Z]{2,9})/;
 

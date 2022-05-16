@@ -70,10 +70,13 @@ export default new Vuex.Store({
         signup();
       }
     },
-    GET_POSTS(state, limit) {
-      fetch(`http://localhost:3000/api/post?limit=${limit}`, {
-        headers: { Authorization: "Bearer " + localStorage.getItem("token") },
-      })
+    GET_POSTS(state, payload) {
+      fetch(
+        `http://localhost:3000/api/post?limit=${payload.limit}&comment=${payload.comment}`,
+        {
+          headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+        }
+      )
         .then((response) => {
           return response.json();
         })
@@ -89,8 +92,8 @@ export default new Vuex.Store({
     auth(context, form = { form: null }) {
       context.commit("AUTH", form);
     },
-    getPosts(context, limit) {
-      context.commit("GET_POSTS", limit);
+    getPosts(context, { limit, comment }) {
+      context.commit("GET_POSTS", { limit, comment });
     },
   },
   modules: {},

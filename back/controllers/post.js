@@ -5,9 +5,21 @@ const Post = db.post;
 
 exports.getAll = (req, res) => {
   const limit = Number(req.query.limit);
-  Post.findAll({offset: 0, limit: limit, order:[
-    ["createdAt","DESC"]
-],})
+  function comment() {
+    if (req.query.comment == 0) {
+      return null;
+    } else if (req.query.comment == 1) {
+      return !null;
+    }
+  }
+  const comment1 = req.query.comment;
+  const conditions = { InCommentId: comment() };
+  Post.findAll({
+    where: conditions,
+    offset: 0,
+    limit: limit,
+    order: [["createdAt", "DESC"]],
+  })
     .then((data) => {
       res.send(data);
     })

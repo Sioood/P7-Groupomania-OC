@@ -1,6 +1,12 @@
 <template>
   <div id="home">
-    <h1 @click="test()">Hello World</h1>
+    <h1>Hello World</h1>
+    <select @change="updateLimit()" name="limit" id="limit" ref="limit">
+      <!-- <option selected>{{ limit }}</option> -->
+      <option v-for="number in limit" :key="number" :value="number">
+        {{ number }}
+      </option>
+    </select>
     <div v-if="token" id="dashboard">
       <div id="feed">
         <div v-for="post in $store.state.posts" :key="post.id" class="post">
@@ -15,8 +21,8 @@
                 <h3>Lastname Name</h3>
                 —
                 <h4>Job</h4>
-                <div id="date">01/01/0001</div>
               </div>
+              <div id="date">{{ postDate(post.createdAt) }}</div>
             </div>
             <div class="post-content">
               <div class="caption">
@@ -38,24 +44,41 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
-
 export default {
   name: "HomePage",
   data() {
     return {
       token: true,
+      limit: [1, 2, 3],
     };
   },
-  methods: {
-    ...mapActions(["getPosts"]),
-    test() {
-      console.log("test");
-      this.$store.dispatch("getPosts", 3);
-    },
+  created() {
+    this.$store.dispatch("getPosts", {
+      limit: this.limit[0],
+      comment: 0,
+    });
   },
-  beforeCreate() {
-    this.$store.dispatch("getPosts", 4);
+  methods: {
+    updateLimit() {
+      this.$store.dispatch("getPosts", {
+        limit: this.$refs.limit.value,
+        comment: 0,
+      });
+    },
+    postDate(date) {
+      const today = new Date();
+
+      const postDate = new Date(date);
+      console.log(today.getTime() + " - " + postDate.getTime());
+      let formattedDate = postDate.toLocaleString();
+      // date.split("T")[0] + " - " + date.split("T")[1].split(".")[0];
+      if (today - postDate <= 86400000) {
+        // 86400000 is one day - post less than 1 day old display only time
+        formattedDate = postDate.toLocaleString().split(",")[1];
+      }
+
+      return formattedDate;
+    },
   },
 };
 </script>
@@ -99,18 +122,21 @@ export default {
 }
 
 .wrapper-post {
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: start;
   justify-content: start;
+  gap: 25px;
 }
 
 .post-info {
+  width: 100%;
   height: auto;
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: left;
+  justify-content: space-between;
   gap: 30px;
 }
 
@@ -119,7 +145,7 @@ export default {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: left;
+  justify-content: space-between;
   gap: 15px;
 }
 
@@ -133,6 +159,11 @@ export default {
   align-items: center;
   justify-content: center;
   text-align: left;
+  gap: 15px;
+}
+
+.caption {
+  width: 100%;
 }
 
 #post-img {
