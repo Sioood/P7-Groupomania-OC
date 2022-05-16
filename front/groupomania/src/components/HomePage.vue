@@ -3,7 +3,7 @@
     <h1 @click="test()">Hello World</h1>
     <div v-if="token" id="dashboard">
       <div id="feed">
-        <div class="post">
+        <div v-for="post in $store.state.posts" :key="post.id" class="post">
           <img
             id="user"
             src="@/assets/Groupomania-user.svg"
@@ -20,10 +20,7 @@
             </div>
             <div class="post-content">
               <div class="caption">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla,
-                voluptates sint? Pariatur dolor corporis sed, iusto laudantium
-                reprehenderit facere fuga voluptate autem suscipit iure optio
-                nam provident blanditiis doloribus tenetur.
+                {{ post.caption }}
               </div>
               <img
                 id="post-img"
@@ -41,6 +38,8 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+
 export default {
   name: "HomePage",
   data() {
@@ -48,33 +47,29 @@ export default {
       token: true,
     };
   },
-  // beforeCreate() {
-  //   fetch("http://localhost:3000/api/post/", {
-  //     headers: {
-  //       Authorization: "Bearer " + localStorage.getItem("token"),
-  //     },
-  //   }).then((response) => {
-  //     if (response.ok) {
-  //       this.token = true;
-  //       alert("hello");
-  //       return response.json();
-  //     } else {
-  //       alert("nope");
-  //     }
-  //   });
-  // },
+  methods: {
+    ...mapActions(["getPosts"]),
+    test() {
+      console.log("test");
+      this.$store.dispatch("getPosts", 3);
+    },
+  },
+  beforeCreate() {
+    this.$store.dispatch("getPosts", 4);
+  },
 };
 </script>
 
 <style scoped>
 #home {
   width: 100%;
-  height: 100%;
+  height: 91.6vh;
+  overflow: hidden;
 }
 
 #dashboard {
   width: 100%;
-  height: 84vh;
+  height: 100%;
   display: flex;
   background: #000;
 }

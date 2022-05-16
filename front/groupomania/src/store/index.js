@@ -5,7 +5,12 @@ import router from "@/router";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-  state: { authMethod: "Login", otherMethod: "signup", authError: "" },
+  state: {
+    authMethod: "Login",
+    otherMethod: "signup",
+    authError: "",
+    posts: [],
+  },
   getters: {},
   mutations: {
     SWAP_AUTH(state) {
@@ -65,6 +70,17 @@ export default new Vuex.Store({
         signup();
       }
     },
+    GET_POSTS(state, limit) {
+      fetch(`http://localhost:3000/api/post?limit=${limit}`, {
+        headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+      })
+        .then((response) => {
+          return response.json();
+        })
+        .then((data) => {
+          state.posts = data;
+        });
+    },
   },
   actions: {
     swapAuth(context) {
@@ -72,6 +88,9 @@ export default new Vuex.Store({
     },
     auth(context, form = { form: null }) {
       context.commit("AUTH", form);
+    },
+    getPosts(context, limit) {
+      context.commit("GET_POSTS", limit);
     },
   },
   modules: {},

@@ -4,7 +4,10 @@ const Post = db.post;
 // get all posts
 
 exports.getAll = (req, res) => {
-  Post.findAll()
+  const limit = Number(req.query.limit);
+  Post.findAll({offset: 0, limit: limit, order:[
+    ["createdAt","DESC"]
+],})
     .then((data) => {
       res.send(data);
     })
