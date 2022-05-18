@@ -26,8 +26,7 @@ exports.getAll = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving tutorials.",
+        message: err.message || "Some error occurred while retrieving posts.",
       });
     });
 };
@@ -95,20 +94,20 @@ exports.updateOne = (req, res) => {
       where: { id: id },
     }
   )
-    .then((response) => {
-      if (response == 1) {
+    .then((post) => {
+      if (post) {
         res.send({
           message: "Post was updated successfully.",
         });
       } else {
         res.send({
-          message: `Cannot update Post with id=${id}. Maybe Post was not found or req.body is empty!`,
+          error: `Cannot update Post with id=${id}. Maybe Post was not found or req.body is empty!`,
         });
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: "Error updating Post with id=" + id,
+        error: "Error updating Post with id=" + id,
       });
     });
 };
@@ -116,24 +115,56 @@ exports.updateOne = (req, res) => {
 // Delete
 
 exports.deleteOne = (req, res) => {
-  const id = req.params.id;
-  Post.destroy({
-    where: { id: id },
-  })
-    .then((response) => {
-      if (response == 1) {
-        res.send({
-          message: "Post was deleted successfully!",
-        });
-      } else {
-        res.send({
-          message: `Cannot delete Post with id=${id}. Maybe Post was not found!`,
-        });
+  const id = req.query.id;
+  // Post.findAll({
+  //   where: { id: id },
+  // })
+  //   .then((post) => {
+  //     if (post) {
+  //       // delete post in the data base
+  //       Post.destroy({ id: id })
+  //         .then(() => res.status(200).json({ message: "deleted post" }))
+  //         .catch((error) =>
+  //           res.status(400).json({ error: "error with delete"})
+  //         );
+
+  //       // .then(() => res.status(200).json({ message: "deleted post" }))
+  //       // .catch((error) => res.status(400).send({ error: "error with delete" }));
+  //     }
+  //   })
+  //   .catch((err) => {
+  //     res.status(500).send({
+  //       message: "Error deleting post with id=" + id,
+  //     });
+  //   });
+
+  Post.findByPk(id)
+    .then((post) => {
+      // const post = response.json()
+      if (!post) {
+        res.status(404).send({ message: "post not found" });
+        return;
       }
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: "Could not delete Post with id=" + id,
+
+      if (req.auth.userId !== post.UserId) {
+        res
+          .status(403)
+          .send({ error: "you are not the good user for delete this post" });
+        return;
+      }
+
+      // delete file
+      const filename = post.imgUrl.split("/images/")[1];
+      fs.unlink(`images/${filename}`, () => {
+        // delete post in the data base
+        Post.destroy({ where: { id: id } })
+          .then(() => res.status(200).send({ message: "deleted post" }))
+          .catch((error) =>
+            res
+              .status(400)
+              .json({ error: "can't delete the post with this id=" + id })
+          );
       });
-    });
+    })
+    .catch((error) => res.status(500).json({ error }));
 };

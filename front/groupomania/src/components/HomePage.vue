@@ -110,7 +110,7 @@ export default {
 /* Feed */
 
 #feed {
-  width: 70%;
+  width: 74vmax;
   margin: 0 0 11px 0;
   padding: 0 0 5vh 0;
   /* flex: 1 1 600px; */
@@ -133,6 +133,8 @@ export default {
   position: fixed;
   right: 0;
   padding: 0 0 5vh 0;
+  width: 25vmax;
+  height: 80vh;
   display: flex;
   flex-direction: column;
   align-items: center;
