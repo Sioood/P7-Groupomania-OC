@@ -1,6 +1,8 @@
 const db = require("../model");
 const Post = db.post;
 
+const fs = require("fs");
+
 // get all posts
 
 exports.getAll = (req, res) => {
@@ -58,7 +60,7 @@ exports.create = (req, res) => {
   }
   const post = {
     caption: req.body.caption,
-    imgUrl: req.body.imgUrl,
+    imgUrl: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`,
     UserId: req.auth.userId,
     InCommentId: req.body.InCommentId,
   };
@@ -79,9 +81,20 @@ exports.create = (req, res) => {
 
 exports.updateOne = (req, res) => {
   const id = req.body.id;
-  Post.update(req.body, {
-    where: { id: id },
-  })
+  Post.update(
+    {
+      id: req.body.id,
+      caption: req.body.caption,
+      imgUrl: `${req.protocol}://${req.get("host")}/images/${
+        req.file.filename
+      }`,
+      UserId: req.auth.userId,
+      InCommentId: req.body.InCommentId,
+    },
+    {
+      where: { id: id },
+    }
+  )
     .then((response) => {
       if (response == 1) {
         res.send({
@@ -103,7 +116,7 @@ exports.updateOne = (req, res) => {
 // Delete
 
 exports.deleteOne = (req, res) => {
-  const id = req.body.id;
+  const id = req.params.id;
   Post.destroy({
     where: { id: id },
   })
