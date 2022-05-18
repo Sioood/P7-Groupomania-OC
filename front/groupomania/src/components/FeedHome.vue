@@ -14,13 +14,14 @@
       <div class="wrapper-post">
         <div class="post-info">
           <div class="wrapper-text">
-            <h2>Lastname Name</h2>
-            <h3>Job</h3>
+            <h2>{{ post.user.name + " " + post.user.lastname }}</h2>
+            <h3>{{ post.user.job }}</h3>
           </div>
+          <div id="date">{{ postDate(post.post.createdAt) }}</div>
         </div>
         <div class="post-content">
           <div class="caption">
-            {{ post.caption }}
+            {{ post.post.caption }}
           </div>
           <img
             id="post-img"
@@ -36,7 +37,22 @@
 <script>
 export default {
   name: "FeedHome",
-  methods: {},
+  methods: {
+    postDate(date) {
+      const today = new Date();
+
+      const postDate = new Date(date);
+      // console.log(today.getTime() + " - " + postDate.getTime());
+      let formattedDate = postDate.toLocaleString();
+      // date.split("T")[0] + " - " + date.split("T")[1].split(".")[0];
+      if (today - postDate <= 86400000) {
+        // 86400000 is one day - post less than 1 day old display only time
+        formattedDate = postDate.toLocaleString().split(",")[1];
+      }
+
+      return formattedDate;
+    },
+  },
 };
 </script>
 
@@ -80,10 +96,11 @@ export default {
 }
 
 .wrapper-text {
-  height: 50px;
+  margin: 0 0 15px 0;
+  height: 100%;
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
   gap: 15px;
 }

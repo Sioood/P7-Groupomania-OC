@@ -96,7 +96,8 @@ export default {
 }
 
 .post-content-trend {
-  /* padding: 0 0 0 15px; */
+  padding: 0 25% 0 15px;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;

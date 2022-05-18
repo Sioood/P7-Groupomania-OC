@@ -1,8 +1,10 @@
 <template>
   <div id="app">
     <nav v-if="nav === true">
-      <router-link to="/auth">Auth</router-link>
-      <button @click="clearLocalStorage()" class="nav-button">Logout</button>
+      <div class="links">
+        <router-link to="/home">Home</router-link>
+        <button @click="clearLocalStorage()" class="nav-button">Logout</button>
+      </div>
     </nav>
     <router-view />
   </div>
@@ -23,27 +25,17 @@ export default {
     };
   },
   beforeCreate() {
-    fetch("http://localhost:3000/api/auth/token", {
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem("token"),
-      },
-    }).then((response) => {
-      if (response.ok) {
-        if (router.currentRoute.path == "/home") {
-          return;
-        } else if (router.currentRoute.path == "/auth") {
-          router.push("/home");
-        }
-      } else {
-        if (router.currentRoute.path == "/auth") {
-          return;
-        }
-        router.push("/auth");
-      }
-    });
+    this.$store.dispatch("checkToken");
   },
+  beforeUpdate() {
+    this.$store.dispatch("checkToken");
+  },
+  // updated() {
+  //   this.$store.dispatch("checkToken");
+  // },
   methods: {
     clearLocalStorage() {
+      this.$store.state.user = null;
       localStorage.removeItem("token");
       router.push("/auth");
     },

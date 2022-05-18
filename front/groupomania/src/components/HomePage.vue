@@ -1,6 +1,6 @@
 <template>
   <div id="home">
-    <h1>Hello World</h1>
+    <User />
     <div class="wrapper-limit">
       <label for="limit">Nombre de posts à afficher :</label>
       <select
@@ -18,28 +18,27 @@
     </div>
     <div v-if="token" id="dashboard">
       <Feed />
-      <Trending />
       <Pannel />
     </div>
   </div>
 </template>
 
 <script>
+import User from "./UserLogged.vue";
 import Feed from "./FeedHome.vue";
-import Trending from "./TrendingHome.vue";
 import Pannel from "./PannelHome.vue";
 
 export default {
   name: "HomePage",
   components: {
+    User,
     Feed,
-    Trending,
     Pannel,
   },
   data() {
     return {
       token: true,
-      limit: [1, 2, 3],
+      limit: [25, 50, 100],
     };
   },
   created() {
@@ -48,34 +47,12 @@ export default {
       comment: 0,
     });
   },
-  computed: {
-    fullName: {
-      // getter
-      get() {
-        return this.$refs.post.getAttribute("data-user-id");
-      },
-    },
-  },
   methods: {
     updateLimit() {
       this.$store.dispatch("getPosts", {
         limit: this.$refs.limit.value,
         comment: 0,
       });
-    },
-    postDate(date) {
-      const today = new Date();
-
-      const postDate = new Date(date);
-      console.log(today.getTime() + " - " + postDate.getTime());
-      let formattedDate = postDate.toLocaleString();
-      // date.split("T")[0] + " - " + date.split("T")[1].split(".")[0];
-      if (today - postDate <= 86400000) {
-        // 86400000 is one day - post less than 1 day old display only time
-        formattedDate = postDate.toLocaleString().split(",")[1];
-      }
-
-      return formattedDate;
     },
   },
 };
@@ -84,13 +61,19 @@ export default {
 <style scoped>
 #home {
   width: 100%;
-  height: 91.6vh;
+  height: auto;
   overflow: hidden;
+}
+
+#profile-icon {
+  margin: 0 0 0 1%;
+  width: 15%;
 }
 
 /* Dashboard */
 
 #dashboard {
+  position: relative;
   width: 100%;
   height: 100%;
   display: flex;
@@ -127,14 +110,17 @@ export default {
 /* Feed */
 
 #feed {
-  flex: 1 1 600px;
+  width: 70%;
+  margin: 0 0 11px 0;
+  padding: 0 0 5vh 0;
+  /* flex: 1 1 600px; */
   overflow-y: scroll;
 }
 
 /* Trending */
 
 #trending {
-  padding: 15px;
+  padding: 15px 15px 5vh 15px;
   flex: 1 1 150px;
   background: var(--smooth-color);
   text-align: left;
@@ -144,6 +130,9 @@ export default {
 /* Pannel */
 
 #pannel {
+  position: fixed;
+  right: 0;
+  padding: 0 0 5vh 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -152,7 +141,7 @@ export default {
   flex: 1 1 200px;
 }
 
-@media screen and (max-width: 768px) {
+/* @media screen and (max-width: 768px) {
   #home {
     height: 100%;
   }
@@ -160,5 +149,5 @@ export default {
   #dashboard {
     flex-direction: column;
   }
-}
+} */
 </style>

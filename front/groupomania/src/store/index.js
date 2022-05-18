@@ -10,9 +10,38 @@ export default new Vuex.Store({
     otherMethod: "signup",
     authError: "",
     posts: [],
+    user: { name: "user" },
   },
   getters: {},
   mutations: {
+    CHECK_TOKEN(state) {
+      fetch("http://localhost:3000/api/auth/token", {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+      })
+        .then((response) => {
+          // console.log(response.json());
+          if (response.ok) {
+            if (router.currentRoute.path == "/home") {
+              return response.json();
+            } else if (router.currentRoute.path == "/auth") {
+              router.push("/home");
+              return response.json();
+            }
+          } else {
+            if (router.currentRoute.path == "/auth") {
+              return;
+            }
+            router.push("/auth");
+          }
+        })
+        .then((data) => {
+          if (data) {
+            state.user = data[0];
+          }
+        });
+    },
     SWAP_AUTH(state) {
       if (state.authMethod === "Login") {
         state.authMethod = "Signup";
@@ -71,21 +100,37 @@ export default new Vuex.Store({
       }
     },
     GET_POSTS(state, payload) {
-      fetch(
-        `http://localhost:3000/api/post?limit=${payload.limit}&comment=${payload.comment}`,
-        {
-          headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+      async function getPosts() {
+        state.posts = [];
+        const fetchPosts = await fetch(
+          `http://localhost:3000/api/post?limit=${payload.limit}&comment=${payload.comment}`,
+          {
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          }
+        );
+        const posts = await fetchPosts.json();
+        for (let i = 0; i < posts.length; i++) {
+          const fetchUser = await fetch(
+            `http://localhost:3000/api/auth/user/${posts[i].UserId}`,
+            {
+              headers: {
+                Authorization: "Bearer " + localStorage.getItem("token"),
+              },
+            }
+          );
+          const user = await fetchUser.json();
+          state.posts.push({ post: posts[i], user: user[0] });
         }
-      )
-        .then((response) => {
-          return response.json();
-        })
-        .then((data) => {
-          state.posts = data;
-        });
+      }
+      getPosts();
     },
   },
   actions: {
+    checkToken(context) {
+      context.commit("CHECK_TOKEN");
+    },
     swapAuth(context) {
       context.commit("SWAP_AUTH");
     },

@@ -9,7 +9,10 @@ const jwt = require("jsonwebtoken");
 exports.token = (req, res) => {
   const id = req.auth.userId;
   var condition = { id: id };
-  User.findAll({ where: condition })
+  User.findAll({
+    attributes: ["id", "email", "name", "lastname", "job"],
+    where: condition,
+  })
     .then((data) => {
       res.send(data);
     })
@@ -43,7 +46,10 @@ exports.users = (req, res) => {
 exports.user = (req, res) => {
   const id = req.params.id;
   var condition = { id: id };
-  User.findAll({ where: condition })
+  User.findAll({
+    attributes: ["id", "email", "name", "lastname", "job"],
+    where: condition,
+  })
     .then((data) => {
       res.send(data);
     })

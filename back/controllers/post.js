@@ -12,7 +12,6 @@ exports.getAll = (req, res) => {
       return !null;
     }
   }
-  const comment1 = req.query.comment;
   const conditions = { InCommentId: comment() };
   Post.findAll({
     where: conditions,

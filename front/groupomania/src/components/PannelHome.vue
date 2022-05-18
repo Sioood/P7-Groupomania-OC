@@ -1,7 +1,7 @@
 <template>
   <div id="pannel">
     <input type="search" name="" id="search" placeholder="🔎 Rechercher" />
-    <a href="" class="button">Profil</a>
+    <a href="/me" class="button">Profil</a>
     <h3>Nouveau post</h3>
     <textarea name="caption" id="textarea" cols="30" rows="10"></textarea>
     <div class="wrapper-buttons">
