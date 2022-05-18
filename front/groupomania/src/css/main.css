@@ -1,13 +1,36 @@
-:root{
+:root {
   --main-color: #091f43;
   --accent-color: #d1515a;
-  --third-color: #DFDFDE;
+  --third-color: #dfdfde;
+  --smooth-color: white;
 }
 
-*{
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+/* ===== Scrollbar CSS ===== */
+/* Firefox */
+* {
+  scrollbar-width: auto;
+  scrollbar-color: var(--main-color) #ffffff;
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #ffffff;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--main-color);
+  border-radius: 10px;
+  border: 3px solid #ffffff;
 }
 
 #app {
@@ -25,14 +48,14 @@
   color: black;
 }
 
-body{
+body {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 }
 
-nav{
+nav {
   padding: 0 5% 0 5%;
   width: 100%;
   display: flex;
@@ -47,7 +70,7 @@ nav > a {
   font-weight: 600;
 }
 
-.nav-button{
+.nav-button {
   all: unset;
   padding: 10px 30px 10px 30px;
   background: var(--main-color);
