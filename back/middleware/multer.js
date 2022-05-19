@@ -19,4 +19,5 @@ const storage = multer.diskStorage({
   },
 });
 
+// single("name of all input need multer") watch out
 module.exports = multer({ storage: storage }).single("imgUrl");

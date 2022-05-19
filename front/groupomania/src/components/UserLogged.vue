@@ -26,7 +26,7 @@ export default {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 15px;
   background: var(--third-color);
   color: var(--main-color);

@@ -67,7 +67,7 @@ export default {
 
 #profile-icon {
   margin: 0 0 0 1%;
-  width: 15%;
+  width: 250px;
 }
 
 /* Dashboard */
@@ -139,8 +139,8 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: start;
-  gap: 15px;
-  flex: 1 1 200px;
+  gap: 25px;
+  /* flex: 1 1 200px; */
 }
 
 /* @media screen and (max-width: 768px) {

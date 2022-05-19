@@ -116,6 +116,7 @@ exports.updateOne = (req, res) => {
 
 exports.deleteOne = (req, res) => {
   const id = req.query.id;
+
   // Post.findAll({
   //   where: { id: id },
   // })
