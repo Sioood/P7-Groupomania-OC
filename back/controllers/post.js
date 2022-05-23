@@ -79,16 +79,23 @@ exports.create = (req, res) => {
 // Update?
 
 exports.updateOne = (req, res) => {
-  const id = req.body.id;
+  const id = req.query.id;
+  console.log(id + " " + JSON.stringify(req.body));
+  if (!req.body) {
+    res.status(500).send({
+      error: "no body",
+    });
+    return;
+  }
   Post.update(
     {
-      id: req.body.id,
+      // id: id,
       caption: req.body.caption,
-      imgUrl: `${req.protocol}://${req.get("host")}/images/${
-        req.file.filename
-      }`,
-      UserId: req.auth.userId,
-      InCommentId: req.body.InCommentId,
+      // imgUrl: `${req.protocol}://${req.get("host")}/images/${
+      //   req.file.filename
+      // }`,
+      // UserId: req.auth.userId,
+      // InCommentId: req.body.InCommentId,
     },
     {
       where: { id: id },
@@ -96,13 +103,17 @@ exports.updateOne = (req, res) => {
   )
     .then((post) => {
       if (post) {
-        res.send({
-          message: "Post was updated successfully.",
-        });
+        res.status(200).send({ message: "Post was updated successfully" });
+        // res.send({
+        //   message: "Post was updated successfully.",
+        // });
       } else {
-        res.send({
+        res.status(500).send({
           error: `Cannot update Post with id=${id}. Maybe Post was not found or req.body is empty!`,
         });
+        // res.send({
+        //   error: `Cannot update Post with id=${id}. Maybe Post was not found or req.body is empty!`,
+        // });
       }
     })
     .catch((err) => {

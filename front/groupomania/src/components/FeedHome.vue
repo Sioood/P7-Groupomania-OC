@@ -1,6 +1,11 @@
 <template>
   <div id="feed">
-    <div v-for="post in $store.state.posts" :key="post.post.id" class="post">
+    <div
+      v-for="post in $store.state.posts"
+      :key="post.post.id"
+      :data-id="post.post.id"
+      class="post"
+    >
       <div class="wrapper-side-post">
         <a :href="'/user?=' + post.user.id">
           <img
@@ -10,11 +15,15 @@
           />
         </a>
         <!-- // delete button v-if check user logged and user create the post -->
-        <button v-if="post.post.UserId == $store.state.user.id" class="update">
+        <button
+          @click="editPost"
+          v-if="post.post.UserId == $store.state.user.id"
+          class="update"
+        >
           Update
         </button>
         <button
-          @click="deletePost(post.post.id)"
+          @click="deletePost"
           v-if="post.post.UserId == $store.state.user.id"
           class="delete"
         >
@@ -32,9 +41,13 @@
           </a>
           <div id="date">{{ postDate(post.post.createdAt) }}</div>
         </div>
-        <a :href="'/post/' + post.post.id" class="post-content">
+        <a class="post-content">
           <div class="caption">
             {{ post.post.caption }}
+          </div>
+          <div class="wrapper-update">
+            <button @click="cleanEdit()">Back</button>
+            <button @click="updatePost">Confirm</button>
           </div>
           <img id="post-img" :src="post.post.imgUrl" alt="post img" />
         </a>
@@ -61,14 +74,52 @@ export default {
 
       return formattedDate;
     },
-    deletePost(id) {
+    deletePost: function deletePost(deleteButton) {
+      const post = deleteButton.target.closest("div.post");
+      const id = post.getAttribute("data-id");
+      console.log(post.getAttribute("data-id"));
       fetch(`http://localhost:3000/api/post/delete?id=${id}`, {
         method: "DELETE",
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),
         },
       });
-      this.$parent.updateLimit();
+      post.remove();
+    },
+    cleanEdit() {
+      const postsContent = document.querySelectorAll(".post-content");
+      postsContent.forEach((el) => {
+        el.classList.remove("edit");
+        el.querySelector(".caption").removeAttribute("contenteditable");
+      });
+    },
+    editPost: function updatePost(edit) {
+      this.cleanEdit();
+      const post = edit.target.closest("div.post");
+      const postContent = post.querySelector(".post-content");
+      const caption = postContent.querySelector(".caption");
+      postContent.classList.add("edit");
+      caption.setAttribute("contenteditable", "true");
+      caption.focus();
+    },
+    updatePost: function updatePost(edit) {
+      const post = edit.target.closest("div.post");
+      const caption = post.querySelector(".caption");
+      const id = post.getAttribute("data-id");
+
+      const test = { caption: caption.innerText };
+
+      fetch(`http://localhost:3000/api/post/update?id=${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+        body: JSON.stringify(test),
+      });
+
+      this.cleanEdit();
     },
   },
 };
@@ -169,5 +220,43 @@ export default {
 
 #post-img {
   width: 100%;
+}
+
+.edit > .caption {
+  padding: 5%;
+  border: 2px var(--accent-color) solid;
+  border-radius: 2px;
+}
+
+.edit > .wrapper-update {
+  display: flex;
+}
+
+.wrapper-update {
+  /* for edit display flex */
+  display: none;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+
+.wrapper-update > button {
+  padding: 15px 30px 15px 30px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--main-color);
+  color: var(--smooth-color);
+  border: none;
+  border-radius: 500px;
+  cursor: pointer;
+}
+
+.wrapper-update > button:nth-child(1) {
+  background: transparent;
+  color: var(--accent-color);
 }
 </style>
