@@ -23,7 +23,7 @@ export default {
 <style scoped>
 #profile {
   padding: 10px 15px 10px 15px;
-  display: flex;
+  display: inline-flex;
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;

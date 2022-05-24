@@ -51,7 +51,7 @@ exports.getOne = (req, res) => {
 // Create
 
 exports.create = (req, res) => {
-  if (!req.body.caption) {
+  if (!req.body) {
     res.status(400).send({
       message: "Content can not be empty!",
     });
@@ -64,6 +64,8 @@ exports.create = (req, res) => {
     InCommentId: req.body.InCommentId,
   };
 
+  console.log(post);
+
   Post.create(post)
     .then((data) => {
       res.status(200).send(data);
@@ -71,7 +73,7 @@ exports.create = (req, res) => {
     .catch((err) => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while creating the Tutorial.",
+          err.message || "Some error occurred while creating the post.",
       });
     });
 };

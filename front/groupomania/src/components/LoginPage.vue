@@ -99,6 +99,7 @@ export default {
         return;
       } else if (auth == "Signup") {
         // empty validator for signup + login inputs
+        // maybe transform v-model for input text and not $ref.value -> (only for select and files)
         const emptySignup =
           this.$refs.name.value &&
           this.$refs.lastname.value &&

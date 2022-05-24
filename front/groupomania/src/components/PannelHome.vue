@@ -3,10 +3,16 @@
     <input type="search" name="" id="search" placeholder="🔎 Rechercher" />
     <a href="/me" class="button">Profil</a>
     <h3>Nouveau post</h3>
-    <textarea name="caption" id="textarea" cols="30" rows="10"></textarea>
+    <textarea
+      v-model="caption"
+      name="caption"
+      id="textarea"
+      cols="30"
+      rows="10"
+    ></textarea>
     <div class="wrapper-buttons">
-      <input type="file" name="file" placeholder="hello" ref="files" />
-      <button id="submitPost">Poster</button>
+      <input type="file" name="file" ref="file" />
+      <button @click="createPost()" id="submitPost">Poster</button>
     </div>
   </div>
 </template>
@@ -14,7 +20,38 @@
 <script>
 export default {
   name: "PannelHome",
-  methods: {},
+  data() {
+    return {
+      caption: "",
+      file: "",
+    };
+  },
+  methods: {
+    createPost() {
+      const userId = this.$store.state.user.id;
+      this.file = this.$refs.file.files[0];
+      const form = {
+        caption: this.caption,
+        imgUrl: this.file,
+        UserId: userId,
+      };
+      console.log(this.file, JSON.stringify(form));
+
+      if (!form.caption || !form.imgUrl) {
+        alert("veuillez mettre une description et une image dans votre post.");
+        return;
+      }
+      fetch("http://localhost:3000/api/post/create", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+        body: JSON.stringify(form),
+      });
+    },
+  },
 };
 </script>
 

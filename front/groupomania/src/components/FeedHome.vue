@@ -48,6 +48,7 @@
           <div class="wrapper-update">
             <button @click="cleanEdit()">Back</button>
             <button @click="updatePost">Confirm</button>
+            <!-- Maybe addd file button but update a post with modify the image is non-sense -->
           </div>
           <img id="post-img" :src="post.post.imgUrl" alt="post img" />
         </a>

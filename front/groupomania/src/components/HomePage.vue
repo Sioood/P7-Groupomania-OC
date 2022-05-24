@@ -67,7 +67,10 @@ export default {
 
 #profile-icon {
   margin: 0 0 0 1%;
-  width: 250px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 /* Dashboard */
