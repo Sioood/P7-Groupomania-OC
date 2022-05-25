@@ -98,6 +98,9 @@ export default {
       userProfile: {},
     };
   },
+  // beforeUpdate() {
+  //   this.$store.dispatch("checkToken");
+  // },
   mounted() {
     this.getUser();
   },
@@ -107,7 +110,7 @@ export default {
       get() {
         let fullname = "";
         if (this.me == true) {
-          fullname = this.user.name + " " + this.user.lastname;
+          fullname = this.$store.state.user.name + " " + this.user.lastname;
         } else {
           fullname = this.userProfile.name + " " + this.userProfile.lastname;
         }

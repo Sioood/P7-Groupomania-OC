@@ -98,17 +98,20 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    checkToken: async (context) => {
+    checkToken: async ({ context, state }) => {
       let data = await fetch("http://localhost:3000/api/auth/token", {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),
         },
       });
       const user = await data.json();
-      if (data.ok) {
-        if (router.currentRoute.path == "/home") {
-          context.commit("CHECK_TOKEN", user);
+      // console.log(user[0]);
 
+      if (data.ok) {
+        state.user = user[0];
+        console.log(state.user);
+        context.commit("CHECK_TOKEN", user);
+        if (router.currentRoute.path == "/home") {
           return;
         } else if (router.currentRoute.path == "/auth") {
           router.push("/home");
