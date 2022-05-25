@@ -26,7 +26,11 @@
           class="input"
         >
           <option selected disabled hidden>Job</option>
-          <option v-for="item in job" :key="item.name" :value="item.name">
+          <option
+            v-for="item in $store.state.job"
+            :key="item.name"
+            :value="item.name"
+          >
             {{ item.name }}
           </option>
         </select>
@@ -70,9 +74,7 @@ import { mapActions } from "vuex";
 export default {
   name: "LoginPage",
   data() {
-    return {
-      job: [{ name: "RH" }, { name: "dev" }, { name: "graphiste" }],
-    };
+    return {};
   },
   methods: {
     ...mapActions(["swapAuth", "checkToken"]),

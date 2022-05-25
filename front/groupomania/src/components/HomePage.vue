@@ -89,11 +89,11 @@ export default {
 }
 
 .wrapper-limit {
-  padding: 15px;
+  padding: 1%;
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: start;
+  justify-content: flex-start;
   gap: 15px;
 }
 
@@ -143,7 +143,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: start;
+  justify-content: flex-start;
   gap: 25px;
   /* flex: 1 1 200px; */
 }

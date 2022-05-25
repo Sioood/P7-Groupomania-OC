@@ -9,6 +9,7 @@ export default new Vuex.Store({
     authMethod: "Login",
     otherMethod: "signup",
     authError: "",
+    job: [{ name: "RH" }, { name: "dev" }, { name: "graphiste" }],
     posts: [],
     user: { name: "no one", lastname: "connected" },
   },

@@ -50,6 +50,7 @@ export default {
         },
         body: JSON.stringify(form),
       });
+      this.$parent.updateLimit();
     },
   },
 };

@@ -49,8 +49,8 @@ export default {
   height: auto;
   display: flex;
   flex-direction: row;
-  align-items: start;
-  justify-content: start;
+  align-items: flex-start;
+  justify-content: flex-start;
   gap: 25px;
   color: var(--main-color);
   border-bottom: 1px var(--main-color) solid;
@@ -67,8 +67,8 @@ export default {
   width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: start;
-  justify-content: start;
+  align-items: flex-start;
+  justify-content: flex-start;
   gap: 15px;
 }
 
@@ -86,7 +86,7 @@ export default {
   height: 100%;
   display: flex;
   flex-direction: column;
-  align-items: start;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 5px;
 }

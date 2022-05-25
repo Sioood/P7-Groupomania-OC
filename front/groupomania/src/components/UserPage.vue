@@ -1,9 +1,9 @@
 <template>
   <div id="user-page">
-    <div class="fullname">
-      <h1 class="name">{{ name }}</h1>
-      <h1 class="lastname">{{ lastname }}</h1>
-    </div>
+    <img src="@/assets/Groupomania-user.svg" alt="" />
+    <h1 class="fullname">{{ fullname }}</h1>
+    <a :href="`mailto:${email}`" class="email">{{ email }}</a>
+    <h2 class="job">{{ job }}</h2>
   </div>
 </template>
 
@@ -11,8 +11,9 @@
 export default {
   name: "UserPage",
   props: {
-    name: String,
-    lastname: String,
+    fullname: String,
+    email: String,
+    job: String,
   },
 };
 </script>
@@ -27,7 +28,24 @@ export default {
   justify-content: center;
 }
 
+img {
+  margin: 0 0 15px 0;
+}
+
 h1 {
-  font-size: 50px;
+  font-size: 40px;
+}
+
+h2 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+}
+
+a {
+  text-decoration: underline;
+  color: var(--main-color);
+  font-weight: 600;
 }
 </style>

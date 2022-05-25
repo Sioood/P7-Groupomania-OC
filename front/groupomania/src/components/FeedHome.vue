@@ -143,8 +143,8 @@ export default {
   height: auto;
   display: flex;
   flex-direction: row;
-  align-items: start;
-  justify-content: start;
+  align-items: flex-start;
+  justify-content: flex-start;
   gap: 25px;
   color: var(--main-color);
   border-bottom: 1px var(--main-color) solid;
@@ -182,8 +182,8 @@ export default {
   width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: start;
-  justify-content: start;
+  align-items: flex-start;
+  justify-content: flex-start;
 }
 
 .post-info {
