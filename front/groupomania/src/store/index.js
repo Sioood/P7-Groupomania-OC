@@ -30,9 +30,6 @@ export default new Vuex.Store({
     },
   },
   mutations: {
-    CHECK_TOKEN(state, user) {
-      state.user = user[0];
-    },
     SWAP_AUTH(state) {
       if (state.authMethod === "Login") {
         state.authMethod = "Signup";
@@ -93,24 +90,20 @@ export default new Vuex.Store({
     GET_POSTS(state, posts) {
       state.posts = posts;
     },
-    GET_USER_POSTS(state, userPosts) {
-      state.userPosts = userPosts;
-    },
+    // GET_USER_POSTS(state, userPosts) {
+    //   state.userPosts = userPosts;
+    // },
   },
   actions: {
-    checkToken: async ({ context, state }) => {
+    checkToken: async ({ state }) => {
       let data = await fetch("http://localhost:3000/api/auth/token", {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),
         },
       });
       const user = await data.json();
-      // console.log(user[0]);
-
       if (data.ok) {
         state.user = user[0];
-        console.log(state.user);
-        context.commit("CHECK_TOKEN", user);
         if (router.currentRoute.path == "/home") {
           return;
         } else if (router.currentRoute.path == "/auth") {
@@ -130,6 +123,7 @@ export default new Vuex.Store({
     auth(context, form = { form: null }) {
       context.commit("AUTH", form);
     },
+    // return to synchronous function
     getPosts: async (context, { limit, comment }) => {
       let posts = [];
       const fetchPosts = await fetch(
@@ -151,15 +145,33 @@ export default new Vuex.Store({
             },
           }
         );
+        const fetchComments = await fetch(
+          `http://localhost:3000/api/post?comment=${dataPosts[i].id}`,
+          {
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          }
+        );
         const user = await fetchUser.json();
-        posts.push({ post: dataPosts[i], user: user[0] });
+        const comments = await fetchComments.json();
+        posts.push({ post: dataPosts[i], user: user[0], comments: comments });
+        console.log(posts);
       }
       context.commit("GET_POSTS", posts);
     },
-    getUserPosts: async (context, params) => {
+    getUserPosts: async ({ state }, { comment, UserId }) => {
       let userPosts = [];
+      let id = UserId;
+
+      if (id == undefined) {
+        return;
+      }
+
+      let params = `?comment=${comment}&UserId=${id}`;
+      console.log(params);
       const fetchPosts = await fetch(
-        `http://localhost:3000/api/post/get/?${params}`,
+        `http://localhost:3000/api/post?${params}`,
         {
           headers: {
             Authorization: "Bearer " + localStorage.getItem("token"),
@@ -171,7 +183,7 @@ export default new Vuex.Store({
       for (let i = 0; i < dataPosts.length; i++) {
         userPosts.push(dataPosts[i]);
       }
-      context.commit("GET_USER_POSTS", userPosts);
+      state.userPosts = userPosts;
     },
   },
   modules: {},

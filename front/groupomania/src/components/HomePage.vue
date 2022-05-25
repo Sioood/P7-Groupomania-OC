@@ -1,6 +1,10 @@
 <template>
   <div id="home">
-    <User :username="user.name" :userlastname="user.lastname" />
+    <User
+      :username="user.name"
+      :userlastname="user.lastname"
+      :url="`/me?id=${user.id}`"
+    />
     <div class="wrapper-limit">
       <label for="limit">Nombre de posts à afficher :</label>
       <select
@@ -45,7 +49,7 @@ export default {
   created() {
     this.getPosts({
       limit: this.limit[0],
-      comment: 0,
+      comment: false,
     });
   },
   computed: {
@@ -56,7 +60,7 @@ export default {
     updateLimit() {
       this.$store.dispatch("getPosts", {
         limit: this.$refs.limit.value,
-        comment: 0,
+        comment: false,
       });
     },
   },

@@ -71,7 +71,7 @@ export default {
   methods: {
     profileUrl(postUserId) {
       if (postUserId == this.user.id) {
-        return "/me";
+        return `/me?id=${postUserId}`;
       } else return `/user?id=${postUserId}`;
     },
     postDate(date) {

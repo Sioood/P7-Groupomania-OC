@@ -1,3 +1,5 @@
+const { Op } = require("sequelize");
+
 const db = require("../model");
 const Post = db.post;
 
@@ -6,49 +8,43 @@ const fs = require("fs");
 // get all posts
 
 exports.getAll = (req, res) => {
-  const limit = Number(req.query.limit);
-  function comment() {
-    if (req.query.comment == 0) {
-      return null;
-    } else if (req.query.comment == 1) {
-      return !null;
-    }
+  let id = { [Op.not]: null };
+  let UserId = { [Op.not]: null };
+  let InCommentId = null;
+  let limit = null;
+
+  if (req.query.id) {
+    id = req.query.id;
+  } else if (req.query.UserId) {
+    UserId = req.query.UserId;
+  } else if (req.query.comment == "true") {
+    InCommentId = { [Op.not]: null };
+  } else if (req.query.comment == "false") {
+    InCommentId = null;
+  } else if (req.query.comment !== "false" || req.query.comment !== "true") {
+    InCommentId = req.query.comment;
+  } else if (req.query.limit) {
+    limit = Number(req.query.limit);
   }
-  const conditions = { InCommentId: comment() };
-  Post.findAll({
-    where: conditions,
+
+  let where = { id: id, UserId: UserId, InCommentId: InCommentId };
+
+  console.log(where);
+
+  let conditions = {
+    where: where,
     offset: 0,
     limit: limit,
     order: [["createdAt", "DESC"]],
-  })
+  };
+
+  Post.findAll(conditions)
     .then((data) => {
       res.send(data);
     })
     .catch((err) => {
       res.status(500).send({
         message: err.message || "Some error occurred while retrieving posts.",
-      });
-    });
-};
-
-// get one post
-
-exports.getOne = (req, res) => {
-  let condition = {};
-  if (req.query.id) {
-    condition = { id: req.query.id };
-  } else if (req.query.UserId) {
-    condition = { UserId: req.query.UserId };
-  }
-  console.log(condition);
-  Post.findAll({ where: condition })
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving tutorials.",
       });
     });
 };

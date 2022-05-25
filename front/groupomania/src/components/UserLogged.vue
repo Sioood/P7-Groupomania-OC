@@ -1,6 +1,6 @@
 <template>
   <div id="profile-icon">
-    <a href="/me" id="profile">
+    <a :href="url" id="profile">
       <img
         class="profile-picture"
         src="@/assets/Groupomania-user.svg"
@@ -18,7 +18,7 @@ import { mapGetters } from "vuex";
 
 export default {
   name: "UserLogged",
-  props: ["username", "userlastname"],
+  props: ["username", "userlastname", "url"],
   computed: {
     ...mapGetters(["user"]),
   },

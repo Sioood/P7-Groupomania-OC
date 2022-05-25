@@ -28,9 +28,11 @@ export default {
   },
   created() {
     this.$store.dispatch("checkToken");
+    console.log("created");
   },
   beforeUpdate() {
     this.$store.dispatch("checkToken");
+    console.log("beforeUpdate");
   },
   methods: {
     clearLocalStorage() {

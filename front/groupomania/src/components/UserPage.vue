@@ -43,16 +43,14 @@ export default {
     email: String,
     job: String,
   },
-  mounted() {
-    if (router.currentRoute.path == "/user") {
-      this.getId = 1;
-    } else if (router.currentRoute.path == "/me") {
-      this.getId = this.user.id;
-    }
-    this.getUserPosts("UserId=1");
+  created() {
+    this.getUserPosts({
+      comment: false,
+      UserId: router.currentRoute.query.id,
+    });
   },
   methods: {
-    ...mapActions(["getUserPosts"]),
+    ...mapActions(["getUserPosts", "checkToken"]),
     postDate(date) {
       const today = new Date();
 
