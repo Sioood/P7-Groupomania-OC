@@ -34,8 +34,13 @@ exports.getAll = (req, res) => {
 // get one post
 
 exports.getOne = (req, res) => {
-  const id = req.params.id;
-  var condition = { id: id };
+  let condition = {};
+  if (req.query.id) {
+    condition = { id: req.query.id };
+  } else if (req.query.UserId) {
+    condition = { UserId: req.query.UserId };
+  }
+  console.log(condition);
   Post.findAll({ where: condition })
     .then((data) => {
       res.send(data);
@@ -72,8 +77,7 @@ exports.create = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message:
-          err.message || "Some error occurred while creating the post.",
+        message: err.message || "Some error occurred while creating the post.",
       });
     });
 };

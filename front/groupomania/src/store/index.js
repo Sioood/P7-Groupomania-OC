@@ -9,9 +9,14 @@ export default new Vuex.Store({
     authMethod: "Login",
     otherMethod: "signup",
     authError: "",
-    job: [{ name: "RH" }, { name: "dev" }, { name: "graphiste" }],
-    posts: [],
     user: { name: "no one", lastname: "connected" },
+    job: [
+      { name: "Ressources Humaines" },
+      { name: "Développeur" },
+      { name: "Graphiste" },
+    ],
+    posts: [],
+    userPosts: [],
   },
   getters: {
     user(state) {
@@ -19,6 +24,9 @@ export default new Vuex.Store({
     },
     posts(state) {
       return state.posts;
+    },
+    userPosts(state) {
+      return state.userPosts;
     },
   },
   mutations: {
@@ -85,6 +93,9 @@ export default new Vuex.Store({
     GET_POSTS(state, posts) {
       state.posts = posts;
     },
+    GET_USER_POSTS(state, userPosts) {
+      state.userPosts = userPosts;
+    },
   },
   actions: {
     checkToken: async (context) => {
@@ -141,6 +152,23 @@ export default new Vuex.Store({
         posts.push({ post: dataPosts[i], user: user[0] });
       }
       context.commit("GET_POSTS", posts);
+    },
+    getUserPosts: async (context, params) => {
+      let userPosts = [];
+      const fetchPosts = await fetch(
+        `http://localhost:3000/api/post/get/?${params}`,
+        {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        }
+      );
+      const dataPosts = await fetchPosts.json();
+
+      for (let i = 0; i < dataPosts.length; i++) {
+        userPosts.push(dataPosts[i]);
+      }
+      context.commit("GET_USER_POSTS", userPosts);
     },
   },
   modules: {},

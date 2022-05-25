@@ -116,6 +116,7 @@ export default {
 
 #feed {
   width: 74vmax;
+  min-height: 80.1vh;
   margin: 0 0 11px 0;
   padding: 0 0 5vh 0;
   /* flex: 1 1 600px; */

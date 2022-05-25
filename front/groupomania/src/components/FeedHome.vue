@@ -7,7 +7,7 @@
       class="post"
     >
       <div class="wrapper-side-post">
-        <a :href="'/user?=' + post.user.id">
+        <a :href="profileUrl(post.post.UserId)">
           <img
             class="user"
             src="@/assets/Groupomania-user.svg"
@@ -35,7 +35,7 @@
       </div>
       <div class="wrapper-post">
         <div class="post-info">
-          <a :href="'/user?=' + post.user.id" class="wrapper-text">
+          <a :href="profileUrl(post.post.UserId)" class="wrapper-text">
             <h2>{{ post.user.name + " " + post.user.lastname }}</h2>
             <h3>{{ post.user.job }}</h3>
           </a>
@@ -63,9 +63,14 @@ import { mapGetters } from "vuex";
 export default {
   name: "FeedHome",
   computed: {
-    ...mapGetters(["posts"]),
+    ...mapGetters(["posts", "user"]),
   },
   methods: {
+    profileUrl(postUserId) {
+      if (postUserId == this.user.id) {
+        return "/me";
+      } else return `/user?id=${postUserId}`;
+    },
     postDate(date) {
       const today = new Date();
 
@@ -167,7 +172,7 @@ export default {
 .update {
   all: unset;
   color: var(--main-color);
-  font-size: 18px;
+  font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
 }

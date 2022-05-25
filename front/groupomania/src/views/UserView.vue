@@ -1,23 +1,43 @@
 <template>
-  <div id="user-page">
-    <div v-if="me === true" class="me wrapper-user">
-      <div class="wrapper-info">
-        <UserPage :fullname="fullname" :email="user.email" :job="user.job" />
+  <div id="user-profile">
+    <div class="user">
+      <div class="modify">
+        <button
+          v-if="me === true || admin == true"
+          @click="deleteUser()"
+          id="delete"
+        >
+          Supprimer l'utilisateur
+        </button>
+        <img src="@/assets/Groupomania-user.svg" alt="" />
+        <button
+          v-if="me === true || admin == true"
+          @click="form = true"
+          id="update"
+        >
+          Mettre à jour le profil
+        </button>
       </div>
-    </div>
-    <div v-if="me === false" class="user wrapper-user">
-      <UserPage />
-    </div>
-    <div v-if="me === true || admin == true" class="modify">
-      <button @click="deleteUser()" id="delete">Supprimer l'utilisateur</button>
-      <button @click="form = true" id="update">Mettre à jour le profil</button>
+      <div class="wrapper-info">
+        <UserPage
+          :fullname="Fullname"
+          :email="userProfile.email"
+          :job="userProfile.job"
+        />
+      </div>
     </div>
     <form v-if="form == true" action="" class="form-update">
       <div @click="form = false" class="close"><span></span><span></span></div>
       <div class="info">
         <h2>Informations</h2>
         <div class="fullname">
-          <input type="text" name="name" id="name" :placeholder="user.name" />
+          <input
+            type="text"
+            name="name"
+            id="name"
+            :placeholder="user.name"
+            v-model="user.name"
+          />
           <input
             type="text"
             name="lastname"
@@ -75,24 +95,49 @@ export default {
       me: null,
       admin: null,
       form: false,
+      userProfile: {},
     };
   },
   mounted() {
-    if (router.currentRoute.path == "/user") {
-      this.me = false;
-    } else if (router.currentRoute.path == "/me") {
-      this.me = true;
-    }
+    this.getUser();
   },
   computed: {
     ...mapGetters(["user"]),
-    fullname: {
+    Fullname: {
       get() {
-        return this.user.name + " " + this.user.lastname;
+        let fullname = "";
+        if (this.me == true) {
+          fullname = this.user.name + " " + this.user.lastname;
+        } else {
+          fullname = this.userProfile.name + " " + this.userProfile.lastname;
+        }
+        return fullname;
       },
     },
   },
   methods: {
+    getUser() {
+      if (router.currentRoute.path == "/user") {
+        this.me = false;
+
+        const id = router.currentRoute.query.id;
+
+        fetch(`http://localhost:3000/api/auth/user/${id}`, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+          .then((response) => {
+            return response.json();
+          })
+          .then((user) => {
+            this.userProfile = user[0];
+          });
+      } else if (router.currentRoute.path == "/me") {
+        this.userProfile = this.user;
+        this.me = true;
+      }
+    },
     deleteUser() {
       // window.confirm("Voulez vous réelement supprimer l'utilisateur?");
 
@@ -142,15 +187,29 @@ export default {
 </script>
 
 <style scoped>
-#user-page {
-  margin: 5% 0 15% 0;
+#user-profile {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 15%;
 }
 
-.wrapper-user {
+#user-page {
+  margin: 0 0 5% 0;
+  padding: 2%;
+  min-width: 50vw;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* background: var(--third-color); */
+  border: 2px var(--main-color) solid;
+  border-radius: 5px;
+}
+
+.user {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -159,6 +218,7 @@ export default {
 }
 
 .wrapper-info {
+  width: 100%;
   display: flex;
   flex-direction: row;
   align-items: flex-end;
@@ -166,9 +226,10 @@ export default {
 }
 
 .modify {
+  margin: 0 0 5% 0;
   display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-end;
+  justify-content: flex;
   gap: 15px;
 }
 
@@ -199,14 +260,10 @@ img {
   width: 250px;
 }
 
-h1 {
-  font-size: 50px;
-}
-
 /* form */
 
 .form-update {
-  position: absolute;
+  position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
