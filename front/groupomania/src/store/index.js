@@ -105,10 +105,10 @@ export default new Vuex.Store({
         },
       });
       const user = await data.json();
-
       if (data.ok) {
-        context.commit("CHECK_TOKEN", user);
         if (router.currentRoute.path == "/home") {
+          context.commit("CHECK_TOKEN", user);
+
           return;
         } else if (router.currentRoute.path == "/auth") {
           router.push("/home");

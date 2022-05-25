@@ -7,7 +7,7 @@
         alt="groupomania user"
       />
       <h3 class="profile-fullname">
-        {{ user.name + " " + user.lastname }}
+        {{ username + " " + userlastname }}
       </h3>
     </a>
   </div>
@@ -18,11 +18,9 @@ import { mapGetters } from "vuex";
 
 export default {
   name: "UserLogged",
+  props: ["username", "userlastname"],
   computed: {
     ...mapGetters(["user"]),
-  },
-  beforeUpdate() {
-    this.$store.dispatch("checkToken");
   },
 };
 </script>

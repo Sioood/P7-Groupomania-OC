@@ -17,7 +17,10 @@
         <!-- // delete button v-if check user logged and user create the post -->
         <button
           @click="editPost"
-          v-if="post.post.UserId == $store.state.user.id"
+          v-if="
+            post.post.UserId == $store.state.user.id ||
+            $store.state.user.admin == true
+          "
           class="update"
         >
           Update

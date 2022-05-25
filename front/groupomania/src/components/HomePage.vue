@@ -1,6 +1,6 @@
 <template>
   <div id="home">
-    <User />
+    <User :username="user.name" :userlastname="user.lastname" />
     <div class="wrapper-limit">
       <label for="limit">Nombre de posts à afficher :</label>
       <select
@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 
 import User from "./UserLogged.vue";
 import Feed from "./FeedHome.vue";
@@ -47,6 +47,9 @@ export default {
       limit: this.limit[0],
       comment: 0,
     });
+  },
+  computed: {
+    ...mapGetters(["user"]),
   },
   methods: {
     ...mapActions(["getPosts"]),
