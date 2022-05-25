@@ -1,7 +1,7 @@
 <template>
   <div id="feed">
     <div
-      v-for="post in $store.state.posts"
+      v-for="post in posts"
       :key="post.post.id"
       :data-id="post.post.id"
       class="post"
@@ -58,8 +58,13 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
   name: "FeedHome",
+  computed: {
+    ...mapGetters(["posts"]),
+  },
   methods: {
     postDate(date) {
       const today = new Date();
@@ -108,7 +113,7 @@ export default {
       const caption = post.querySelector(".caption");
       const id = post.getAttribute("data-id");
 
-      const test = { caption: caption.innerText };
+      const postContent = { caption: caption.innerText };
 
       fetch(`http://localhost:3000/api/post/update?id=${id}`, {
         method: "PUT",
@@ -117,7 +122,7 @@ export default {
           Accept: "application/json",
           Authorization: "Bearer " + localStorage.getItem("token"),
         },
-        body: JSON.stringify(test),
+        body: JSON.stringify(postContent),
       });
 
       this.cleanEdit();

@@ -16,7 +16,7 @@
         </option>
       </select>
     </div>
-    <div v-if="token" id="dashboard">
+    <div id="dashboard">
       <Feed />
       <Pannel />
     </div>
@@ -24,6 +24,8 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+
 import User from "./UserLogged.vue";
 import Feed from "./FeedHome.vue";
 import Pannel from "./PannelHome.vue";
@@ -37,17 +39,17 @@ export default {
   },
   data() {
     return {
-      token: true,
       limit: [25, 50, 100],
     };
   },
   created() {
-    this.$store.dispatch("getPosts", {
+    this.getPosts({
       limit: this.limit[0],
       comment: 0,
     });
   },
   methods: {
+    ...mapActions(["getPosts"]),
     updateLimit() {
       this.$store.dispatch("getPosts", {
         limit: this.$refs.limit.value,

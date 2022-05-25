@@ -7,16 +7,23 @@
         alt="groupomania user"
       />
       <h3 class="profile-fullname">
-        {{ $store.state.user.name + " " + $store.state.user.lastname }}
+        {{ user.name + " " + user.lastname }}
       </h3>
     </a>
   </div>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
   name: "UserLogged",
-  props: ["fullName"],
+  computed: {
+    ...mapGetters(["user"]),
+  },
+  beforeUpdate() {
+    this.$store.dispatch("checkToken");
+  },
 };
 </script>
 

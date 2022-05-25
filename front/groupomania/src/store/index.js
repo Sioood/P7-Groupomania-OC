@@ -10,37 +10,19 @@ export default new Vuex.Store({
     otherMethod: "signup",
     authError: "",
     posts: [],
-    user: { name: "user" },
+    user: { name: "no one", lastname: "connected" },
   },
-  getters: {},
+  getters: {
+    user(state) {
+      return state.user;
+    },
+    posts(state) {
+      return state.posts;
+    },
+  },
   mutations: {
-    CHECK_TOKEN(state) {
-      fetch("http://localhost:3000/api/auth/token", {
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("token"),
-        },
-      })
-        .then((response) => {
-          // console.log(response.json());
-          if (response.ok) {
-            if (router.currentRoute.path == "/home") {
-              return response.json();
-            } else if (router.currentRoute.path == "/auth") {
-              router.push("/home");
-              return response.json();
-            }
-          } else {
-            if (router.currentRoute.path == "/auth") {
-              return;
-            }
-            router.push("/auth");
-          }
-        })
-        .then((data) => {
-          if (data) {
-            state.user = data[0];
-          }
-        });
+    CHECK_TOKEN(state, user) {
+      state.user = user[0];
     },
     SWAP_AUTH(state) {
       if (state.authMethod === "Login") {
@@ -99,37 +81,33 @@ export default new Vuex.Store({
         signup();
       }
     },
-    GET_POSTS(state, payload) {
-      async function getPosts() {
-        state.posts = [];
-        const fetchPosts = await fetch(
-          `http://localhost:3000/api/post?limit=${payload.limit}&comment=${payload.comment}`,
-          {
-            headers: {
-              Authorization: "Bearer " + localStorage.getItem("token"),
-            },
-          }
-        );
-        const posts = await fetchPosts.json();
-        for (let i = 0; i < posts.length; i++) {
-          const fetchUser = await fetch(
-            `http://localhost:3000/api/auth/user/${posts[i].UserId}`,
-            {
-              headers: {
-                Authorization: "Bearer " + localStorage.getItem("token"),
-              },
-            }
-          );
-          const user = await fetchUser.json();
-          state.posts.push({ post: posts[i], user: user[0] });
-        }
-      }
-      getPosts();
+    GET_POSTS(state, posts) {
+      state.posts = posts;
     },
   },
   actions: {
-    checkToken(context) {
-      context.commit("CHECK_TOKEN");
+    checkToken: async (context) => {
+      let data = await fetch("http://localhost:3000/api/auth/token", {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+      });
+      const user = await data.json();
+
+      if (data.ok) {
+        context.commit("CHECK_TOKEN", user);
+        if (router.currentRoute.path == "/home") {
+          return;
+        } else if (router.currentRoute.path == "/auth") {
+          router.push("/home");
+          return;
+        }
+      } else {
+        if (router.currentRoute.path == "/auth") {
+          return;
+        }
+        router.push("/auth");
+      }
     },
     swapAuth(context) {
       context.commit("SWAP_AUTH");
@@ -137,8 +115,31 @@ export default new Vuex.Store({
     auth(context, form = { form: null }) {
       context.commit("AUTH", form);
     },
-    getPosts(context, { limit, comment }) {
-      context.commit("GET_POSTS", { limit, comment });
+    getPosts: async (context, { limit, comment }) => {
+      let posts = [];
+      const fetchPosts = await fetch(
+        `http://localhost:3000/api/post?limit=${limit}&comment=${comment}`,
+        {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        }
+      );
+      const dataPosts = await fetchPosts.json();
+
+      for (let i = 0; i < dataPosts.length; i++) {
+        const fetchUser = await fetch(
+          `http://localhost:3000/api/auth/user/${dataPosts[i].UserId}`,
+          {
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          }
+        );
+        const user = await fetchUser.json();
+        posts.push({ post: dataPosts[i], user: user[0] });
+      }
+      context.commit("GET_POSTS", posts);
     },
   },
   modules: {},

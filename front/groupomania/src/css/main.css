@@ -89,3 +89,8 @@ nav > * > a {
   font-weight: 600;
   cursor: pointer;
 }
+
+#logout {
+  background: var(--accent-color);
+  color: var(--third-color);
+}

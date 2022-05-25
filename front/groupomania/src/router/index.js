@@ -1,6 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import PageNotFound from "../components/PageNotFound.vue";
+import UserView from "../views/UserView.vue";
 import StartView from "../views/StartView.vue";
 import HomeView from "../views/HomeView.vue";
 
@@ -30,6 +31,16 @@ const routes = [
     path: "/home",
     name: "home",
     component: HomeView,
+  },
+  {
+    path: "/user",
+    name: "user",
+    component: UserView,
+  },
+  {
+    path: "/me",
+    name: "me",
+    component: UserView,
   },
 ];
 

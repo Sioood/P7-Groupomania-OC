@@ -3,7 +3,9 @@
     <nav v-if="nav === true">
       <div class="links">
         <router-link to="/home">Home</router-link>
-        <button @click="clearLocalStorage()" class="nav-button">Logout</button>
+        <button @click="clearLocalStorage()" class="nav-button" id="logout">
+          Logout
+        </button>
       </div>
     </nav>
     <router-view />
@@ -24,15 +26,12 @@ export default {
       nav: true,
     };
   },
-  beforeCreate() {
+  created() {
     this.$store.dispatch("checkToken");
   },
   beforeUpdate() {
     this.$store.dispatch("checkToken");
   },
-  // updated() {
-  //   this.$store.dispatch("checkToken");
-  // },
   methods: {
     clearLocalStorage() {
       this.$store.state.user = null;
