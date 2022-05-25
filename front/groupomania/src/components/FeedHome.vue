@@ -49,7 +49,7 @@
             {{ post.post.caption }}
           </div>
           <div class="wrapper-update">
-            <button @click="cleanEdit()">Back</button>
+            <button @click="cleanEdit">Back</button>
             <button @click="updatePost">Confirm</button>
             <!-- Maybe addd file button but update a post with modify the image is non-sense -->
           </div>
@@ -65,6 +65,11 @@ import { mapGetters } from "vuex";
 
 export default {
   name: "FeedHome",
+  data() {
+    return {
+      savedCaption: "a",
+    };
+  },
   computed: {
     ...mapGetters(["posts", "user"]),
   },
@@ -100,7 +105,13 @@ export default {
       });
       post.remove();
     },
-    cleanEdit() {
+    cleanEdit: function cleanEdit(edit) {
+      if (edit !== "clickOnAnotherPost") {
+        const postContent = edit.target.closest(".post-content");
+        const caption = postContent.querySelector(".caption");
+        caption.innerText = this.savedCaption;
+      }
+
       const postsContent = document.querySelectorAll(".post-content");
       postsContent.forEach((el) => {
         el.classList.remove("edit");
@@ -108,10 +119,11 @@ export default {
       });
     },
     editPost: function updatePost(edit) {
-      this.cleanEdit();
+      this.cleanEdit("clickOnAnotherPost");
       const post = edit.target.closest("div.post");
       const postContent = post.querySelector(".post-content");
       const caption = postContent.querySelector(".caption");
+      this.savedCaption = caption.innerText;
       postContent.classList.add("edit");
       caption.setAttribute("contenteditable", "true");
       caption.focus();
@@ -237,7 +249,7 @@ export default {
 }
 
 .edit > .caption {
-  padding: 5%;
+  padding: 0.2rem;
   border: 2px var(--accent-color) solid;
   border-radius: 2px;
 }
@@ -248,6 +260,7 @@ export default {
 
 .wrapper-update {
   /* for edit display flex */
+  width: 100%;
   display: none;
   flex-direction: row;
   align-items: center;
