@@ -34,26 +34,31 @@ export default {
 
       // try new FormData()
 
-      const form = {
-        caption: this.caption,
-        file: this.file,
-        UserId: userId,
-      };
-      console.log(this.file, JSON.stringify(form));
+      let form = new FormData();
 
-      if (!form.caption || !form.file) {
+      form.append("caption", this.caption);
+      form.append("file", this.file);
+      form.append("UserId", userId);
+
+      // const form = {
+      //   caption: this.caption,
+      //   file: this.file,
+      //   UserId: userId,
+      // };
+
+      if (!this.caption || !this.$refs.file.files[0]) {
         alert("veuillez mettre une description et une image dans votre post.");
         return;
       }
       fetch("http://localhost:3000/api/post/create", {
         method: "POST",
         headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
           Authorization: "Bearer " + localStorage.getItem("token"),
         },
-        body: JSON.stringify(form),
+        body: form,
       });
+
+      // refresh posts but this new post don't display because not save at the good time
       this.$parent.updateLimit();
     },
   },

@@ -13,17 +13,27 @@ exports.getAll = (req, res) => {
   let InCommentId = null;
   let limit = null;
 
+  //id
   if (req.query.id) {
     id = req.query.id;
-  } else if (req.query.UserId) {
+  }
+
+  // user id
+  if (req.query.UserId) {
     UserId = req.query.UserId;
+  }
+
+  // comment
+  if (!req.query.comment || req.query.comment == "false") {
+    InCommentId = null;
   } else if (req.query.comment == "true") {
     InCommentId = { [Op.not]: null };
-  } else if (req.query.comment == "false") {
-    InCommentId = null;
   } else if (req.query.comment !== "false" || req.query.comment !== "true") {
     InCommentId = req.query.comment;
-  } else if (req.query.limit) {
+  }
+
+  // limit
+  if (req.query.limit) {
     limit = Number(req.query.limit);
   }
 

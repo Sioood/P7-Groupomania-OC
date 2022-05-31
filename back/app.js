@@ -37,6 +37,7 @@ app.use((req, res, next) => {
   );
   // Header for same source helmet images
   res.setHeader("Cross-Origin-Resource-Policy", "same-site");
+  res.setHeader("Cross-Origin-Resource-Policy", "same-origin");
   next();
 });
 

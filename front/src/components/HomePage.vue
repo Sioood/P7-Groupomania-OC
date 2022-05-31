@@ -1,10 +1,6 @@
 <template>
   <div id="home">
-    <User
-      :username="user.name"
-      :userlastname="user.lastname"
-      :url="`/me?id=${user.id}`"
-    />
+    <User :username="user.name" :userlastname="user.lastname" :url="`/me`" />
     <div class="wrapper-limit">
       <label for="limit">Nombre de posts à afficher :</label>
       <select
@@ -22,7 +18,7 @@
     </div>
     <div id="dashboard">
       <Feed />
-      <Pannel :url="`/me?id=${user.id}`" />
+      <Pannel :url="`/me`" />
     </div>
   </div>
 </template>

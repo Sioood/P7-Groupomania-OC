@@ -35,7 +35,7 @@ export default {
   data() {
     return {
       posts: [],
-      getId: null,
+      userId: localStorage.getItem("id"),
     };
   },
   props: {
@@ -44,9 +44,12 @@ export default {
     job: String,
   },
   created() {
+    if (router.currentRoute.path == "/user") {
+      this.userId = router.currentRoute.query.id;
+    }
     this.getUserPosts({
       comment: false,
-      UserId: router.currentRoute.query.id,
+      UserId: this.userId,
     });
   },
   methods: {
@@ -160,12 +163,13 @@ h2 {
 
 .post-content {
   padding: 0 0 0 15px;
+  width: 80%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: left;
-  gap: 15px;
+  gap: 25px;
 }
 
 .caption {
@@ -174,6 +178,8 @@ h2 {
 
 #post-img {
   width: 100%;
+  height: auto;
+  border-radius: 15px;
 }
 
 .edit > .caption {

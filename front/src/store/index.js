@@ -10,7 +10,10 @@ export default new Vuex.Store({
     authMethod: "Login",
     otherMethod: "signup",
     authError: "",
-    user: { name: "no one", lastname: "connected" },
+    user: {
+      name: "no one",
+      lastname: "connected",
+    },
     job: [
       { name: "Ressources Humaines" },
       { name: "Développeur" },
@@ -63,6 +66,7 @@ export default new Vuex.Store({
           })
           .then((data) => {
             localStorage.setItem("token", data.token);
+            localStorage.setItem("id", data.userId);
             router.push("/home");
           });
       }
@@ -104,7 +108,9 @@ export default new Vuex.Store({
       });
       const user = await data.json();
       if (data.ok) {
-        state.user = user[0];
+        if (state.user.id === undefined) {
+          state.user = user[0];
+        }
         if (router.currentRoute.path == "/home") {
           return;
         } else if (router.currentRoute.path == "/auth") {
@@ -118,6 +124,7 @@ export default new Vuex.Store({
         }
         router.push("/auth");
       }
+      return user;
     },
     swapAuth(context) {
       context.commit("SWAP_AUTH");
@@ -127,6 +134,7 @@ export default new Vuex.Store({
     },
     // return to synchronous function
     getPosts: async ({ state }, { limit, comment }) => {
+      console.log(limit);
       let posts = [];
       const fetchPosts = await fetch(
         `${state.baseUrl}api/post?limit=${limit}&comment=${comment}`,

@@ -92,7 +92,7 @@ export default {
   },
   data() {
     return {
-      me: null,
+      me: localStorage.getItem("id"),
       admin: null,
       form: false,
       userProfile: {},
@@ -102,14 +102,18 @@ export default {
   //   this.$store.dispatch("checkToken");
   // },
   mounted() {
-    this.getUser();
+    if (router.currentRoute.path == "/me") {
+      this.getUser(localStorage.getItem("id"));
+    } else if (router.currentRoute.path == "/user") {
+      this.getUser(router.currentRoute.query.id);
+    }
   },
   computed: {
     ...mapGetters(["user"]),
     Fullname: {
       get() {
         let fullname = "";
-        if (this.me == true) {
+        if (router.currentRoute.path == "/me") {
           fullname = this.$store.state.user.name + " " + this.user.lastname;
         } else {
           fullname = this.userProfile.name + " " + this.userProfile.lastname;
@@ -119,28 +123,18 @@ export default {
     },
   },
   methods: {
-    getUser() {
-      // re fetch the token for get id user connected
-      if (router.currentRoute.path == "/user") {
-        this.me = false;
-
-        const id = router.currentRoute.query.id;
-
-        fetch(`http://localhost:3000/api/auth/user/${id}`, {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
+    getUser(id) {
+      fetch(`http://localhost:3000/api/auth/user/${id}`, {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+      })
+        .then((response) => {
+          return response.json();
         })
-          .then((response) => {
-            return response.json();
-          })
-          .then((user) => {
-            this.userProfile = user[0];
-          });
-      } else if (router.currentRoute.path == "/me") {
-        this.userProfile = this.user;
-        this.me = true;
-      }
+        .then((user) => {
+          this.userProfile = user[0];
+        });
     },
     deleteUser() {
       // window.confirm("Voulez vous réelement supprimer l'utilisateur?");
@@ -172,7 +166,7 @@ export default {
       let user = {};
 
       if (router.currentRoute.path == "/me") {
-        id = this.user.id;
+        id = this.$store.state.user.id;
       } else if (router.currentRoute.path == "/user") {
         // after set function to get user with id give id
       }
@@ -202,7 +196,7 @@ export default {
 #user-page {
   margin: 0 0 5% 0;
   padding: 2%;
-  min-width: 50vw;
+  width: 50vw;
   height: 100%;
   display: flex;
   flex-direction: column;
