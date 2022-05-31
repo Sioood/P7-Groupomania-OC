@@ -22,7 +22,7 @@
     </div>
     <div id="dashboard">
       <Feed />
-      <Pannel />
+      <Pannel :url="`/me?id=${user.id}`" />
     </div>
   </div>
 </template>

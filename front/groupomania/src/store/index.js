@@ -6,6 +6,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
+    baseUrl: "",
     authMethod: "Login",
     otherMethod: "signup",
     authError: "",
@@ -112,6 +113,7 @@ export default new Vuex.Store({
         }
       } else {
         if (router.currentRoute.path == "/auth") {
+          // localStorage.removeItem("token");
           return;
         }
         router.push("/auth");

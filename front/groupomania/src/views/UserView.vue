@@ -120,6 +120,7 @@ export default {
   },
   methods: {
     getUser() {
+      // re fetch the token for get id user connected
       if (router.currentRoute.path == "/user") {
         this.me = false;
 

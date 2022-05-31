@@ -1,7 +1,7 @@
 <template>
   <div id="pannel">
     <input type="search" name="" id="search" placeholder="🔎 Rechercher" />
-    <a href="/me" class="button">Profil</a>
+    <a :href="url" class="button">Profil</a>
     <h3>Nouveau post</h3>
     <textarea
       v-model="caption"
@@ -20,6 +20,7 @@
 <script>
 export default {
   name: "PannelHome",
+  props: ["url"],
   data() {
     return {
       caption: "",
@@ -30,14 +31,17 @@ export default {
     createPost() {
       const userId = this.$store.state.user.id;
       this.file = this.$refs.file.files[0];
+
+      // try new FormData()
+
       const form = {
         caption: this.caption,
-        imgUrl: this.file,
+        file: this.file,
         UserId: userId,
       };
       console.log(this.file, JSON.stringify(form));
 
-      if (!form.caption || !form.imgUrl) {
+      if (!form.caption || !form.file) {
         alert("veuillez mettre une description et une image dans votre post.");
         return;
       }

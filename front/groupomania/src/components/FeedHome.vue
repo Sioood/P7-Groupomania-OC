@@ -48,12 +48,17 @@
           <div class="caption">
             {{ post.post.caption }}
           </div>
-          <div class="wrapper-update">
-            <button @click="cleanEdit">Back</button>
-            <button @click="updatePost">Confirm</button>
+          <div class="wrapper-edit">
+            <button @click="cleanEdit" class="edit-back">Back</button>
+            <button @click="updatePost" class="edit-confirm">Confirm</button>
             <!-- Maybe addd file button but update a post with modify the image is non-sense -->
           </div>
           <img id="post-img" :src="post.post.imgUrl" alt="post img" />
+          <div v-for="comment in post.comments" :key="comment.id">
+            <!-- need to fetch info user for each comments ... -->
+            <h3>{{ "user id = " + comment.UserId }}</h3>
+            <h4>{{ comment.caption }}</h4>
+          </div>
         </a>
       </div>
     </div>
@@ -67,7 +72,7 @@ export default {
   name: "FeedHome",
   data() {
     return {
-      savedCaption: "a",
+      savedCaption: "",
     };
   },
   computed: {
@@ -254,11 +259,11 @@ export default {
   border-radius: 2px;
 }
 
-.edit > .wrapper-update {
+.edit > .wrapper-edit {
   display: flex;
 }
 
-.wrapper-update {
+.wrapper-edit {
   /* for edit display flex */
   width: 100%;
   display: none;
@@ -268,7 +273,7 @@ export default {
   gap: 15px;
 }
 
-.wrapper-update > button {
+.edit-confirm {
   padding: 15px 30px 15px 30px;
   width: 100%;
   display: flex;
@@ -282,8 +287,21 @@ export default {
   cursor: pointer;
 }
 
-.wrapper-update > button:nth-child(1) {
+.edit-back {
+  padding: 15px 30px 15px 30px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   background: transparent;
   color: var(--accent-color);
+  border: none;
+  border-radius: 500px;
+  cursor: pointer;
+}
+.edit-back:hover {
+  background: var(--accent-color);
+  color: var(--third-color);
 }
 </style>
