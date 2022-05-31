@@ -9,7 +9,7 @@ const app = express();
 // app use
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(helmet());
+// app.use(helmet());
 app.disable("x-powered-by");
 app.use(helmet.hidePoweredBy());
 
