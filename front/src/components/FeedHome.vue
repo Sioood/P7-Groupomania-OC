@@ -27,7 +27,10 @@
         </button>
         <button
           @click="deletePost"
-          v-if="post.post.UserId == $store.state.user.id"
+          v-if="
+            post.post.UserId == $store.state.user.id ||
+            $store.state.user.admin == true
+          "
           class="delete"
         >
           Delete
@@ -81,7 +84,7 @@ export default {
   methods: {
     profileUrl(postUserId) {
       if (postUserId == this.user.id) {
-        return `/me?id=${postUserId}`;
+        return `/me`;
       } else return `/user?id=${postUserId}`;
     },
     postDate(date) {
@@ -111,7 +114,8 @@ export default {
       post.remove();
     },
     cleanEdit: function cleanEdit(edit) {
-      if (edit !== "clickOnAnotherPost") {
+      console.log(edit);
+      if (edit !== "clickOnAnotherPost" && edit !== "update") {
         const postContent = edit.target.closest(".post-content");
         const caption = postContent.querySelector(".caption");
         caption.innerText = this.savedCaption;
@@ -134,6 +138,7 @@ export default {
       caption.focus();
     },
     updatePost: function updatePost(edit) {
+      console.log("here");
       const post = edit.target.closest("div.post");
       const caption = post.querySelector(".caption");
       const id = post.getAttribute("data-id");
@@ -150,7 +155,7 @@ export default {
         body: JSON.stringify(postContent),
       });
 
-      this.cleanEdit();
+      this.cleanEdit("update");
     },
   },
 };
@@ -239,7 +244,7 @@ export default {
   padding: 0 0 0 15px;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   text-align: left;
   gap: 15px;
@@ -250,7 +255,8 @@ export default {
 }
 
 #post-img {
-  width: 100%;
+  width: 70%;
+  border-radius: 15px;
 }
 
 .edit > .caption {
