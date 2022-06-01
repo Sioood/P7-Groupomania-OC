@@ -49,7 +49,7 @@ export default {
         alert("veuillez mettre une description et une image dans votre post.");
         return;
       }
-      fetch(`${this.$store.state.baseUrlapi}/post/create`, {
+      fetch(`${this.$store.state.baseUrl}/api/post/create`, {
         method: "POST",
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),

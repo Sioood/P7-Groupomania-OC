@@ -6,7 +6,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    baseUrl: "http://localhost:3000/",
+    baseUrl: "http://localhost:3000",
     authMethod: "Login",
     otherMethod: "signup",
     authError: "",
@@ -45,7 +45,7 @@ export default new Vuex.Store({
     },
     AUTH(state, form) {
       function login() {
-        fetch(`${state.baseUrl}api/auth/login`, {
+        fetch(`${state.baseUrl}/api/auth/login`, {
           method: "POST",
           headers: {
             Accept: "application/json",
@@ -72,7 +72,7 @@ export default new Vuex.Store({
           });
       }
       function signup() {
-        fetch(`${state.baseUrl}api/auth/signup`, {
+        fetch(`${state.baseUrl}/api/auth/signup`, {
           method: "POST",
           headers: {
             Accept: "application/json",
@@ -102,7 +102,7 @@ export default new Vuex.Store({
   },
   actions: {
     checkToken: async ({ state }) => {
-      let data = await fetch(`${state.baseUrl}api/auth/token`, {
+      let data = await fetch(`${state.baseUrl}/api/auth/token`, {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),
         },
@@ -134,10 +134,10 @@ export default new Vuex.Store({
       context.commit("AUTH", form);
     },
     // return to synchronous function
-    getPosts: async ({ state }, { limit, comment }) => {
+    getPosts: async ({ state }, { id, limit, comment, commentLimit }) => {
       let posts = [];
       const fetchPosts = await fetch(
-        `${state.baseUrl}api/post?limit=${limit}&comment=${comment}`,
+        `${state.baseUrl}/api/post?id=${id}&limit=${limit}&comment=${comment}`,
         {
           headers: {
             Authorization: "Bearer " + localStorage.getItem("token"),
@@ -148,7 +148,7 @@ export default new Vuex.Store({
 
       for (let i = 0; i < dataPosts.length; i++) {
         const fetchUser = await fetch(
-          `${state.baseUrl}api/auth/user/${dataPosts[i].UserId}`,
+          `${state.baseUrl}/api/auth/user/${dataPosts[i].UserId}`,
           {
             headers: {
               Authorization: "Bearer " + localStorage.getItem("token"),
@@ -157,7 +157,7 @@ export default new Vuex.Store({
         );
         // fetch only 1 comment (most liked but function like not developed), for now is the lastest comment
         const fetchComment = await fetch(
-          `${state.baseUrl}api/post?comment=${dataPosts[i].id}&limit=1`,
+          `${state.baseUrl}/api/post?comment=${dataPosts[i].id}&limit=${commentLimit}`,
           {
             headers: {
               Authorization: "Bearer " + localStorage.getItem("token"),
@@ -165,7 +165,7 @@ export default new Vuex.Store({
           }
         );
         const fetchCommentUser = await fetch(
-          `${state.baseUrl}api/auth/user/${dataPosts[i].UserId}`,
+          `${state.baseUrl}/api/auth/user/${dataPosts[i].UserId}`,
           {
             headers: {
               Authorization: "Bearer " + localStorage.getItem("token"),
@@ -196,7 +196,7 @@ export default new Vuex.Store({
 
       let params = `?comment=${comment}&UserId=${id}`;
       console.log(params);
-      const fetchPosts = await fetch(`${state.baseUrl}api/post?${params}`, {
+      const fetchPosts = await fetch(`${state.baseUrl}/api/post?${params}`, {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),
         },

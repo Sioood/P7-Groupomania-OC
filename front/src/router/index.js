@@ -4,6 +4,7 @@ import PageNotFound from "../components/PageNotFound.vue";
 import UserView from "../views/UserView.vue";
 import StartView from "../views/StartView.vue";
 import HomeView from "../views/HomeView.vue";
+import PostView from "../views/PostView.vue";
 
 Vue.use(VueRouter);
 
@@ -41,6 +42,11 @@ const routes = [
     path: "/me",
     name: "me",
     component: UserView,
+  },
+  {
+    path: "/post",
+    name: "post",
+    component: PostView,
   },
 ];
 

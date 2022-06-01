@@ -14,7 +14,7 @@ exports.getAll = (req, res) => {
   let limit = null;
 
   //id
-  if (req.query.id) {
+  if (req.query.id && req.query.id != "false") {
     id = req.query.id;
   }
 
@@ -33,7 +33,7 @@ exports.getAll = (req, res) => {
   }
 
   // limit
-  if (req.query.limit) {
+  if (req.query.limit && req.query.limit != 0) {
     limit = Number(req.query.limit);
   }
 
@@ -74,7 +74,8 @@ exports.create = (req, res) => {
   if (req.file == undefined) {
     file = null;
   } else {
-    file = `${req.protocol}://${req.get("host")}/images/${req.file.filename}`;
+    // file = `${req.protocol}://${req.get("host")}/images/${req.file.filename}`;
+    file = `/images/${req.file.filename}`;
   }
 
   console.log(file);

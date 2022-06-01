@@ -44,8 +44,10 @@ export default {
   },
   created() {
     this.getPosts({
+      id: false,
       limit: this.limit[0],
       comment: false,
+      commentLimit: 1,
     });
   },
   computed: {
@@ -55,8 +57,10 @@ export default {
     ...mapActions(["getPosts"]),
     updateLimit() {
       this.$store.dispatch("getPosts", {
+        id: false,
         limit: this.$refs.limit.value,
         comment: false,
+        commentLimit: 1,
       });
     },
   },

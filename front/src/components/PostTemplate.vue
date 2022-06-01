@@ -17,7 +17,7 @@
         "
         class="update"
       >
-        Update
+        <img src="@/assets/setting.svg" alt="update post" />
       </button>
       <button
         @click="deletePost"
@@ -27,7 +27,7 @@
         "
         class="delete"
       >
-        Delete
+        <img src="@/assets/bin.svg" alt="delete post" />
         <!-- {{
             post.post.UserId + " " + $store.state.user.id + " " + post.post.id
           }} -->
@@ -43,7 +43,11 @@
         <div class="date">{{ postDate(post.post.createdAt) }}</div>
       </div>
       <div class="post-content">
-        <a href="/post" title="Afficher le post" class="caption">
+        <a
+          :href="`/post?id=${post.post.id}`"
+          title="Afficher le post"
+          class="caption"
+        >
           {{ post.post.caption }}
         </a>
         <div class="wrapper-edit">
@@ -51,7 +55,11 @@
           <button @click="updatePost" class="edit-confirm">Confirm</button>
           <!-- Maybe add file button but update a post with modify the image is non-sense -->
         </div>
-        <img class="post-img" :src="post.post.imgUrl" alt="post img" />
+        <img
+          class="post-img"
+          :src="$store.state.baseUrl + post.post.imgUrl"
+          alt="post img"
+        />
 
         <div class="wrapper-comment">
           <span></span>
@@ -151,7 +159,7 @@ export default {
     deletePost: function deletePost(deleteButton) {
       const post = deleteButton.target.closest("div.post");
       const id = post.getAttribute("data-id");
-      fetch(`${this.$store.state.baseUrl}api/post/delete?id=${id}`, {
+      fetch(`${this.$store.state.baseUrl}/api/post/delete?id=${id}`, {
         method: "DELETE",
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),
@@ -186,14 +194,13 @@ export default {
       caption.focus();
     },
     updatePost: function updatePost(edit) {
-      console.log("here");
       const post = edit.target.closest("div.post");
       const caption = post.querySelector(".caption");
       const id = post.getAttribute("data-id");
 
       const postContent = { caption: caption.innerText };
 
-      fetch(`this.$store.state.baseUrlapi/post/update?id=${id}`, {
+      fetch(`${this.$store.state.baseUrl}/api/post/update?id=${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -212,7 +219,7 @@ export default {
         InCommentId: id,
       };
       this.commentSent.push(comment);
-      fetch(`${this.$store.state.baseUrl}api/post/create`, {
+      fetch(`${this.$store.state.baseUrl}/api/post/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -221,7 +228,7 @@ export default {
         },
         body: JSON.stringify(comment),
       });
-      console.log("comment");
+      this.sendCaption = "";
     },
   },
 };
@@ -282,6 +289,11 @@ span {
   all: unset;
   color: var(--accent-color);
   cursor: pointer;
+}
+
+.update > img,
+.delete > img {
+  width: 30px;
 }
 
 .wrapper-post {
