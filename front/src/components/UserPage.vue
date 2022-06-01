@@ -16,10 +16,11 @@
           {{ post.caption }}
         </div>
         <!-- <div class="wrapper-update">
-            <button @click="cleanEdit()">Back</button>
-            <button @click="updatePost">Confirm</button>
-            Maybe addd file button but update a post with modify the image is non-sense
-          </div> -->
+          <button @click="cleanEdit()">Back</button>
+          <button @click="updatePost">Confirm</button>
+          Maybe addd file button but update a post with modify the image is
+          non-sense
+        </div> -->
         <img id="post-img" :src="post.imgUrl" alt="post img" />
       </a>
     </div>

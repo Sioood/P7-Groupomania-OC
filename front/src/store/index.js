@@ -51,6 +51,7 @@ export default new Vuex.Store({
             Accept: "application/json",
             "Content-Type": "application/json",
           },
+          // form a modifier seulement par email et mot de passe ? formData
           body: JSON.stringify(form),
         })
           .then((response) => {
@@ -134,7 +135,6 @@ export default new Vuex.Store({
     },
     // return to synchronous function
     getPosts: async ({ state }, { limit, comment }) => {
-      console.log(limit);
       let posts = [];
       const fetchPosts = await fetch(
         `${state.baseUrl}api/post?limit=${limit}&comment=${comment}`,
@@ -155,8 +155,17 @@ export default new Vuex.Store({
             },
           }
         );
-        const fetchComments = await fetch(
-          `${state.baseUrl}api/post?comment=${dataPosts[i].id}`,
+        // fetch only 1 comment (most liked but function like not developed), for now is the lastest comment
+        const fetchComment = await fetch(
+          `${state.baseUrl}api/post?comment=${dataPosts[i].id}&limit=1`,
+          {
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          }
+        );
+        const fetchCommentUser = await fetch(
+          `${state.baseUrl}api/auth/user/${dataPosts[i].UserId}`,
           {
             headers: {
               Authorization: "Bearer " + localStorage.getItem("token"),
@@ -164,8 +173,14 @@ export default new Vuex.Store({
           }
         );
         const user = await fetchUser.json();
-        const comments = await fetchComments.json();
-        posts.push({ post: dataPosts[i], user: user[0], comments: comments });
+        const commentUser = await fetchCommentUser.json();
+        const comment = await fetchComment.json();
+        posts.push({
+          post: dataPosts[i],
+          user: user[0],
+          comment: comment,
+          commentUser: commentUser,
+        });
         console.log(posts);
       }
       state.posts = posts;

@@ -3,7 +3,7 @@
     <div class="user">
       <div class="modify">
         <button
-          v-if="me === true || admin == true"
+          v-if="me == this.$store.state.user.id || admin === true"
           @click="deleteUser()"
           id="delete"
         >
@@ -93,7 +93,6 @@ export default {
   data() {
     return {
       me: localStorage.getItem("id"),
-      admin: null,
       form: false,
       userProfile: {},
     };
@@ -121,6 +120,11 @@ export default {
         return fullname;
       },
     },
+    admin: {
+      get() {
+        return this.$store.state.user.admin;
+      },
+    },
   },
   methods: {
     getUser(id) {
@@ -134,6 +138,7 @@ export default {
         })
         .then((user) => {
           this.userProfile = user[0];
+          console.log(this.userProfile.admin);
         });
     },
     deleteUser() {

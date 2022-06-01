@@ -3,9 +3,7 @@
     <nav v-if="nav === true">
       <div class="links">
         <router-link to="/home">Home</router-link>
-        <button @click="clearLocalStorage()" class="nav-button" id="logout">
-          Logout
-        </button>
+        <button @click="Logout()" class="nav-button" id="logout">Logout</button>
       </div>
     </nav>
     <router-view />
@@ -35,7 +33,9 @@ export default {
     console.log("beforeUpdate");
   },
   methods: {
-    clearLocalStorage() {
+    Logout() {
+      // clear all error when logout because user not defined
+      location.reload();
       this.$store.state.user = null;
       localStorage.removeItem("token");
       router.push("/auth");

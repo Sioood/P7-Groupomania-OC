@@ -10,7 +10,7 @@ exports.token = (req, res) => {
   const id = req.auth.userId;
   var condition = { id: id };
   User.findAll({
-    attributes: ["id", "admin", "email", "name", "lastname", "job"],
+    attributes: ["id", "admin", "email", "name", "lastname", "imgUrl", "job"],
     where: condition,
   })
     .then((data) => {
@@ -47,7 +47,7 @@ exports.user = (req, res) => {
   const id = req.params.id;
   var condition = { id: id };
   User.findAll({
-    attributes: ["id", "email", "name", "lastname", "job"],
+    attributes: ["id", "admin", "email", "name", "lastname", "imgUrl", "job"],
     where: condition,
   })
     .then((data) => {

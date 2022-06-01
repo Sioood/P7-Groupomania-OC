@@ -57,9 +57,11 @@ export default {
         },
         body: form,
       });
-
+      this.caption = "";
       // refresh posts but this new post don't display because not save at the good time
-      this.$parent.updateLimit();
+      setTimeout(() => {
+        location.reload();
+      }, 100);
     },
   },
 };

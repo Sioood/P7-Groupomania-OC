@@ -68,9 +68,20 @@ exports.create = (req, res) => {
     });
     return;
   }
+
+  let file;
+
+  if (req.file == undefined) {
+    file = null;
+  } else {
+    file = `${req.protocol}://${req.get("host")}/images/${req.file.filename}`;
+  }
+
+  console.log(file);
+
   const post = {
     caption: req.body.caption,
-    imgUrl: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`,
+    imgUrl: file,
     UserId: req.auth.userId,
     InCommentId: req.body.InCommentId,
   };

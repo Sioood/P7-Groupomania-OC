@@ -22,6 +22,8 @@ const storage = multer.diskStorage({
       name +
         "_" +
         date.toLocaleDateString("fr").split("/").join("-") +
+        "_" +
+        date.toLocaleTimeString("fr").split(":").join("-") +
         "." +
         extension
     );
