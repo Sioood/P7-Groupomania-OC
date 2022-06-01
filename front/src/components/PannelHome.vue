@@ -18,6 +18,8 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
   name: "PannelHome",
   props: ["url"],
@@ -26,6 +28,9 @@ export default {
       caption: "",
       file: "",
     };
+  },
+  computed: {
+    ...mapGetters(["posts"]),
   },
   methods: {
     createPost() {
@@ -40,17 +45,11 @@ export default {
       form.append("file", this.file);
       form.append("UserId", userId);
 
-      // const form = {
-      //   caption: this.caption,
-      //   file: this.file,
-      //   UserId: userId,
-      // };
-
       if (!this.caption || !this.$refs.file.files[0]) {
         alert("veuillez mettre une description et une image dans votre post.");
         return;
       }
-      fetch("http://localhost:3000/api/post/create", {
+      fetch(`${this.$store.state.baseUrlapi}/post/create`, {
         method: "POST",
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),
@@ -58,6 +57,7 @@ export default {
         body: form,
       });
       this.caption = "";
+
       // refresh posts but this new post don't display because not save at the good time
       setTimeout(() => {
         location.reload();

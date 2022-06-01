@@ -151,7 +151,7 @@ export default {
     deletePost: function deletePost(deleteButton) {
       const post = deleteButton.target.closest("div.post");
       const id = post.getAttribute("data-id");
-      fetch(`http://localhost:3000/api/post/delete?id=${id}`, {
+      fetch(`${this.$store.state.baseUrl}api/post/delete?id=${id}`, {
         method: "DELETE",
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),
@@ -193,7 +193,7 @@ export default {
 
       const postContent = { caption: caption.innerText };
 
-      fetch(`http://localhost:3000/api/post/update?id=${id}`, {
+      fetch(`this.$store.state.baseUrlapi/post/update?id=${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -212,7 +212,7 @@ export default {
         InCommentId: id,
       };
       this.commentSent.push(comment);
-      fetch(`http://localhost:3000/api/post/create`, {
+      fetch(`${this.$store.state.baseUrl}api/post/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

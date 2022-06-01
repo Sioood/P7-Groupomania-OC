@@ -128,7 +128,7 @@ export default {
   },
   methods: {
     getUser(id) {
-      fetch(`http://localhost:3000/api/auth/user/${id}`, {
+      fetch(`${this.$store.state.baseUrl}api/auth/user/${id}`, {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),
         },
@@ -152,7 +152,7 @@ export default {
           path = "/home";
         }
 
-        fetch(`http://localhost:3000/api/auth/user/delete?id=${id}`, {
+        fetch(`${this.$store.state.baseUrl}api/auth/user/delete?id=${id}`, {
           method: "DELETE",
           headers: {
             Authorization: "Bearer " + localStorage.getItem("token"),
@@ -175,7 +175,7 @@ export default {
       } else if (router.currentRoute.path == "/user") {
         // after set function to get user with id give id
       }
-      fetch(`http://localhost:3000/api/auth/user/update?id=${id}`, {
+      fetch(`${this.$store.state.baseUrl}api/auth/user/update?id=${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

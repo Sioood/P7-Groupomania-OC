@@ -1,6 +1,5 @@
 <template>
   <div id="feed">
-    <button @click="test()">test</button>
     <PostTemplate
       v-for="post in posts"
       :key="post.post.id"
@@ -27,13 +26,6 @@ export default {
   },
   computed: {
     ...mapGetters(["posts"]),
-  },
-  methods: {
-    test() {
-      const test = this.posts;
-      test.splice(0, 1);
-      console.log(test);
-    },
   },
 };
 </script>
