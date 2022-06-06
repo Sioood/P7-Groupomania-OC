@@ -43,9 +43,18 @@
             name="lastname"
             id="lastname"
             :placeholder="user.lastname"
+            v-model="userLastname"
           />
         </div>
-        <input type="email" name="email" id="email" :placeholder="user.email" />
+
+        <input
+          type="email"
+          name="email"
+          id="email"
+          :placeholder="user.email"
+          v-model="userEmail"
+        />
+        <input type="file" name="file" id="file" ref="file" />
         <select id="job" ref="job" class="input">
           <option selected disabled hidden>{{ user.job }}</option>
           <option
@@ -74,7 +83,7 @@
           />
         </div>
       </div>
-      <button @click.prevent="" type="submit">Modifier</button>
+      <button @click.prevent="updateUser()" type="submit">Modifier</button>
     </form>
   </div>
 </template>
@@ -93,8 +102,12 @@ export default {
   data() {
     return {
       me: localStorage.getItem("id"),
-      form: false,
+      form: true,
       userProfile: {},
+      userName: undefined,
+      userLastname: undefined,
+      userEmail: undefined,
+      userJob: undefined,
     };
   },
   // beforeUpdate() {
@@ -169,22 +182,45 @@ export default {
     updateUser() {
       let id = null;
 
-      let user = {};
+      let form = new FormData();
+
+      if (this.file) {
+        form.append("file", this.file);
+      }
+      if (this.userName) {
+        form.append("name", this.userName);
+      }
+      if (this.userLastname) {
+        form.append("lastname", this.userLastname);
+      }
+      if (this.userEmail) {
+        form.append("email", this.userEmail);
+      }
+      if (this.userJob) {
+        form.append("job", this.userJob);
+      }
 
       if (router.currentRoute.path == "/me") {
         id = this.$store.state.user.id;
       } else if (router.currentRoute.path == "/user") {
-        // after set function to get user with id give id
+        id = router.currentRoute.query.id;
       }
-      fetch(`${this.$store.state.baseUrl}/api/auth/user/update?id=${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          Authorization: "Bearer " + localStorage.getItem("token"),
-        },
-        body: JSON.stringify(user),
-      });
+
+      if (
+        this.file ||
+        this.userName ||
+        this.userLastname ||
+        this.userEmail ||
+        this.userJob
+      ) {
+        fetch(`${this.$store.state.baseUrl}/api/auth/user/update?id=${id}`, {
+          method: "PUT",
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+          body: form,
+        });
+      }
     },
   },
 };
@@ -331,6 +367,28 @@ input {
   /* border: 2px var(--accent-color) solid; */
   background: var(--third-color);
   border-radius: 5px;
+}
+
+input[type="file"] {
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  background: transparent;
+}
+
+input[type="file"]::-webkit-file-upload-button {
+  padding: 15px 30px 15px 30px;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  background: var(--main-color);
+  color: var(--smooth-color);
+  border: none;
+  border-radius: 500px;
+  cursor: pointer;
 }
 
 .info {

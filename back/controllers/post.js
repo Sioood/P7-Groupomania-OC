@@ -105,7 +105,6 @@ exports.create = (req, res) => {
 
 exports.updateOne = (req, res) => {
   const id = req.query.id;
-  console.log(id + " " + JSON.stringify(req.body));
   if (!req.body) {
     res.status(500).send({
       error: "no body",
@@ -162,7 +161,7 @@ exports.deleteOne = (req, res) => {
           return;
         }
         console.log(user.admin !== true);
-        if (user.id !== post.UserId && user.admin !== true) {
+        if (user.id != post.UserId && user.admin !== true) {
           res
             .status(403)
             .send({ error: "you are not the good user for delete this post" });

@@ -132,7 +132,6 @@ export default {
   },
   mounted() {
     this.loggedUser = this.user;
-    console.log(this.posts.comment);
   },
   computed: {
     ...mapGetters(["posts", "user"]),

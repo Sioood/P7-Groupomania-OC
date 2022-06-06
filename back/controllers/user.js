@@ -125,31 +125,76 @@ exports.updateOne = (req, res) => {
     });
     return;
   }
-  User.update(
-    {
-      name: req.body.name,
-      lastname: req.body.lastname,
-      email: req.body.email,
-      job: req.body.job,
-    },
-    {
-      where: { id: id },
-    }
-  )
-    .then((user) => {
-      if (user) {
-        res.status(200).send({ message: "User was updated successfully" });
-      } else {
-        res.status(500).send({
-          error: `Cannot update User with id=${id}. Maybe User was not found or req.body is empty!`,
-        });
+
+  User.findByPk(req.auth.userId)
+    .then((reqUser) => {
+      console.log(reqUser.id != id);
+      if (reqUser.id != id && reqUser.admin !== true) {
+        res
+          .status(403)
+          .send({ error: "you are not the good user for update this user" });
+        return;
       }
-    })
-    .catch((err) => {
-      res.status(500).send({
-        error: "Error updating Post with id=" + id,
+      User.findByPk(id).then((user) => {
+        // const post = response.json()
+        if (!user) {
+          res.status(404).send({ message: "user not found" });
+          return;
+        }
+
+        if (!req.file) {
+          updateUser(null);
+        } else {
+          updateUser(`/images/${req.file.filename}`);
+        }
+
+        function updateUser(img) {
+          User.update(
+            {
+              name: req.body.name,
+              lastname: req.body.lastname,
+              email: req.body.email,
+              imgUrl: img,
+              job: req.body.job,
+            },
+            { where: { id: id } }
+          )
+            .then(() => res.status(200).send({ message: "updated user" }))
+            .catch(() =>
+              res
+                .status(400)
+                .json({ error: "can't delete the user with this id=" + id })
+            );
+        }
       });
-    });
+    })
+    .catch(() => res.status(500).json({ error: "error" }));
+
+  // User.update(
+  //   {
+  //     name: req.body.name,
+  //     lastname: req.body.lastname,
+  //     email: req.body.email,
+  //     job: req.body.job,
+  //   },
+  //   {
+  //     where: { id: id },
+  //   }
+  // )
+  //   .then((user) => {
+  //     if (user) {
+  //       res.status(200).send({ message: "User was updated successfully" });
+  //     } else {
+  //       res.status(500).send({
+  //         error: `Cannot update User with id=${id}. Maybe User was not found or req.body is empty!`,
+  //       });
+  //     }
+  //   })
+  //   .catch((err) => {
+  //     res.status(500).send({
+  //       error: "Error updating Post with id=" + id,
+  //     });
+  //   });
 };
 
 exports.deleteOne = (req, res) => {

@@ -30,7 +30,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["posts"]),
+    ...mapGetters(["posts", "user"]),
   },
   methods: {
     createPost() {
@@ -45,8 +45,8 @@ export default {
       form.append("file", this.file);
       form.append("UserId", userId);
 
-      if (!this.caption || !this.$refs.file.files[0]) {
-        alert("veuillez mettre une description et une image dans votre post.");
+      if (!this.caption && !this.$refs.file.files[0]) {
+        alert("veuillez ne pas envoyer un post vide");
         return;
       }
       fetch(`${this.$store.state.baseUrl}/api/post/create`, {
@@ -55,13 +55,22 @@ export default {
           Authorization: "Bearer " + localStorage.getItem("token"),
         },
         body: form,
-      });
+      })
+        .then((response) => response.json())
+        .then((post) => {
+          let formPost = {
+            post: post,
+            comments: [],
+            user: this.user,
+          };
+          this.posts.push(formPost);
+        });
       this.caption = "";
 
       // refresh posts but this new post don't display because not save at the good time
-      setTimeout(() => {
-        location.reload();
-      }, 100);
+      // setTimeout(() => {
+      //   location.reload();
+      // }, 100);
     },
   },
 };
