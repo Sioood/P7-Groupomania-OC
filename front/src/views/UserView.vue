@@ -11,7 +11,7 @@
         </button>
         <img src="@/assets/Groupomania-user.svg" alt="" />
         <button
-          v-if="me === true || admin == true"
+          v-if="me == this.$store.state.user.id || admin === true"
           @click="form = true"
           id="update"
         >
@@ -36,7 +36,7 @@
             name="name"
             id="name"
             :placeholder="user.name"
-            v-model="user.name"
+            v-model="userName"
           />
           <input
             type="text"
@@ -105,6 +105,7 @@ export default {
       this.getUser(localStorage.getItem("id"));
     } else if (router.currentRoute.path == "/user") {
       this.getUser(router.currentRoute.query.id);
+      this.me = null;
     }
   },
   computed: {

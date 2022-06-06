@@ -3,6 +3,7 @@
     <div class="wrapper-side-post">
       <a :href="profileUrl(post.post.UserId)">
         <img
+          v-if="!post.user.imgUrl"
           class="user"
           src="@/assets/Groupomania-user.svg"
           alt="groupomania user"
@@ -56,45 +57,118 @@
           <!-- Maybe add file button but update a post with modify the image is non-sense -->
         </div>
         <img
+          v-if="post.post.imgUrl"
           class="post-img"
           :src="$store.state.baseUrl + post.post.imgUrl"
           alt="post img"
         />
-
         <div class="wrapper-comment">
           <span></span>
+
           <!-- template for comment user to display when send -->
-          <div v-for="comment in commentSent" :key="comment.id" class="comment">
-            <div
-              v-for="commentUser in post.commentUser"
-              :key="commentUser.name"
-              class="comment-user"
-            >
-              <img :src="commentUser.imgUrl" alt="user" />
-              <h3>{{ commentUser.name + " " + commentUser.lastname }}</h3>
+          <!-- <div v-for="comment in commentSent" :key="comment.id" class="comment">
+            <div class="comment-user">
+              <img :src="user.imgUrl" alt="user" />
+              <h3>{{ userLogged.name + " " + userLogged.lastname }}</h3>
               —
               <div id="date">{{ postDate(new Date()) }}</div>
             </div>
             <h4 class="comment-caption">{{ comment.caption }}</h4>
+            <div class="wrapper-edit">
+              <button @click="cleanEdit" class="edit-back">Back</button>
+              <button @click="updatePost" class="edit-confirm">Confirm</button>
+            </div>
+          </div> -->
+
+          <div v-for="comment in commentSent" :key="comment.id" class="comment">
+            <div class="wrapper-comment-edit">
+              <button
+                @click="editPost"
+                v-if="
+                  post.post.UserId == $store.state.user.id ||
+                  $store.state.user.admin == true
+                "
+                class="update-comment"
+              >
+                <img src="@/assets/setting.svg" alt="update post" />
+              </button>
+              <button
+                @click="deletePost"
+                v-if="
+                  post.post.UserId == $store.state.user.id ||
+                  $store.state.user.admin == true
+                "
+                class="delete-comment"
+              >
+                <img src="@/assets/bin.svg" alt="delete post" />
+                <!-- {{
+            post.post.UserId + " " + $store.state.user.id + " " + post.post.id
+          }} -->
+              </button>
+            </div>
+            <!-- need to fetch info user for each comments ... -->
+            <div class="comment-content">
+              <div class="comment-user">
+                <img
+                  :src="$store.state.baseUrl + userLogged.imgUrl"
+                  alt="user"
+                />
+                <h3>{{ userLogged.name + " " + userLogged.lastname }}</h3>
+                —
+                <div id="date">{{ postDate(new Date()) }}</div>
+              </div>
+              <h4 class="comment-caption">{{ comment.caption }}</h4>
+            </div>
           </div>
+
           <!-- comment fetch -->
           <div
             v-for="comment in post.comment"
             :key="comment.id"
             class="comment"
           >
-            <!-- need to fetch info user for each comments ... -->
-            <div
-              v-for="commentUser in post.commentUser"
-              :key="commentUser.name"
-              class="comment-user"
-            >
-              <img :src="commentUser.imgUrl" alt="user" />
-              <h3>{{ commentUser.name + " " + commentUser.lastname }}</h3>
-              —
-              <div id="date">{{ postDate(comment.createdAt) }}</div>
+            <div class="wrapper-comment-edit">
+              <button
+                @click="editPost"
+                v-if="
+                  post.post.UserId == $store.state.user.id ||
+                  $store.state.user.admin == true
+                "
+                class="update-comment"
+              >
+                <img src="@/assets/setting.svg" alt="update post" />
+              </button>
+              <button
+                @click="deletePost"
+                v-if="
+                  post.post.UserId == $store.state.user.id ||
+                  $store.state.user.admin == true
+                "
+                class="delete-comment"
+              >
+                <img src="@/assets/bin.svg" alt="delete post" />
+                <!-- {{
+            post.post.UserId + " " + $store.state.user.id + " " + post.post.id
+          }} -->
+              </button>
             </div>
-            <h4 class="comment-caption">{{ comment.caption }}</h4>
+            <!-- need to fetch info user for each comments ... -->
+            <div class="comment-content">
+              <div
+                v-for="commentUser in post.commentUser"
+                :key="commentUser.name"
+                class="comment-user"
+              >
+                <img
+                  :src="$store.state.baseUrl + commentUser.imgUrl"
+                  alt="user"
+                />
+                <h3>{{ commentUser.name + " " + commentUser.lastname }}</h3>
+                —
+                <div id="date">{{ postDate(comment.createdAt) }}</div>
+              </div>
+              <h4 class="comment-caption">{{ comment.caption }}</h4>
+            </div>
           </div>
           <div class="add-comment">
             <h4>Ajouter un commmentaire</h4>
@@ -131,7 +205,12 @@ export default {
     return {
       sendCaption: "",
       commentSent: [],
+      userLogged: this.user,
     };
+  },
+  mounted() {
+    this.userLogged = this.user;
+    console.log(this.userLogged);
   },
   computed: {
     ...mapGetters(["posts", "user"]),
@@ -430,6 +509,36 @@ span {
 
 .comment {
   margin: 0 0 0 15px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 15px;
+}
+
+.wrapper-comment-edit {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 15px;
+}
+
+.update-comment {
+  all: unset;
+  color: var(--main-color);
+  cursor: pointer;
+}
+
+.delete-comment {
+  all: unset;
+  color: var(--accent-color);
+  cursor: pointer;
+}
+
+.update-comment > img,
+.delete-comment > img {
+  width: 20px;
 }
 
 .comment-caption {

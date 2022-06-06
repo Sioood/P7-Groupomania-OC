@@ -38,6 +38,7 @@ export default {
       location.reload();
       this.$store.state.user = null;
       localStorage.removeItem("token");
+      localStorage.removeItem("id");
       router.push("/auth");
     },
   },

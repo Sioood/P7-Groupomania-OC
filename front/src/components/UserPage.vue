@@ -9,21 +9,21 @@
       </div>
       <h2 class="job">{{ job }}</h2>
     </div>
-    <div class="wrapper-post" v-for="post in userPosts" :key="post.id">
+    <PostTemplate
+      v-for="post in posts"
+      :key="post.post.id"
+      :post="post"
+      :dataId="post.post.id"
+    />
+    <!-- <div class="wrapper-post" v-for="post in userPosts" :key="post.id">
       <div id="date">{{ postDate(post.createdAt) }}</div>
       <a class="post-content">
         <div class="caption">
           {{ post.caption }}
         </div>
-        <!-- <div class="wrapper-update">
-          <button @click="cleanEdit()">Back</button>
-          <button @click="updatePost">Confirm</button>
-          Maybe addd file button but update a post with modify the image is
-          non-sense
-        </div> -->
         <img id="post-img" :src="post.imgUrl" alt="post img" />
       </a>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -31,11 +31,15 @@
 import router from "@/router";
 import { mapActions, mapGetters } from "vuex";
 
+import PostTemplate from "@/components/PostTemplate.vue";
+
 export default {
   name: "UserPage",
+  components: {
+    PostTemplate,
+  },
   data() {
     return {
-      posts: [],
       userId: localStorage.getItem("id"),
     };
   },
@@ -48,13 +52,17 @@ export default {
     if (router.currentRoute.path == "/user") {
       this.userId = router.currentRoute.query.id;
     }
-    this.getUserPosts({
+    // modify with postTemplate and query paramameters
+    this.getPosts({
+      id: null,
+      userId: this.userId,
+      limit: 0,
       comment: false,
-      UserId: this.userId,
+      commentLimit: 1,
     });
   },
   methods: {
-    ...mapActions(["getUserPosts", "checkToken"]),
+    ...mapActions(["getPosts", "checkToken"]),
     postDate(date) {
       const today = new Date();
 
@@ -71,7 +79,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["user", "userPosts"]),
+    ...mapGetters(["user", "posts"]),
   },
 };
 </script>

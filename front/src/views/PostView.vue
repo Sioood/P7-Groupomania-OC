@@ -26,6 +26,7 @@ export default {
   created() {
     this.getPosts({
       id: router.currentRoute.query.id,
+      userId: null,
       limit: 0,
       comment: false,
       commentLimit: 0,

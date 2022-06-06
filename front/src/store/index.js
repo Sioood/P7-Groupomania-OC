@@ -134,10 +134,13 @@ export default new Vuex.Store({
       context.commit("AUTH", form);
     },
     // return to synchronous function
-    getPosts: async ({ state }, { id, limit, comment, commentLimit }) => {
+    getPosts: async (
+      { state },
+      { id, userId, limit, comment, commentLimit }
+    ) => {
       let posts = [];
       const fetchPosts = await fetch(
-        `${state.baseUrl}/api/post?id=${id}&limit=${limit}&comment=${comment}`,
+        `${state.baseUrl}/api/post?id=${id}&userId=${userId}&limit=${limit}&comment=${comment}`,
         {
           headers: {
             Authorization: "Bearer " + localStorage.getItem("token"),
@@ -181,32 +184,10 @@ export default new Vuex.Store({
           comment: comment,
           commentUser: commentUser,
         });
-        console.log(posts);
+        // console.log(posts);
       }
       state.posts = posts;
       // context.commit("GET_POSTS", posts);
-    },
-    getUserPosts: async ({ state }, { comment, UserId }) => {
-      let userPosts = [];
-      let id = UserId;
-
-      if (id == undefined) {
-        return;
-      }
-
-      let params = `?comment=${comment}&UserId=${id}`;
-      console.log(params);
-      const fetchPosts = await fetch(`${state.baseUrl}/api/post?${params}`, {
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("token"),
-        },
-      });
-      const dataPosts = await fetchPosts.json();
-
-      for (let i = 0; i < dataPosts.length; i++) {
-        userPosts.push(dataPosts[i]);
-      }
-      state.userPosts = userPosts;
     },
   },
   modules: {},

@@ -14,13 +14,13 @@ exports.getAll = (req, res) => {
   let limit = null;
 
   //id
-  if (req.query.id && req.query.id != "false") {
+  if (req.query.id && req.query.id != "null") {
     id = req.query.id;
   }
 
   // user id
-  if (req.query.UserId) {
-    UserId = req.query.UserId;
+  if (req.query.userId && req.query.userId != "null") {
+    UserId = req.query.userId;
   }
 
   // comment
