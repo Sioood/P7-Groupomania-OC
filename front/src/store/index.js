@@ -171,20 +171,25 @@ export default new Vuex.Store({
 
         let commentUserId;
 
+        let commentUser;
+
         if (comment[0]) {
           commentUserId = comment[0].UserId;
+
+          const fetchCommentUser = await fetch(
+            `${state.baseUrl}/api/auth/user/${commentUserId}`,
+            {
+              headers: {
+                Authorization: "Bearer " + localStorage.getItem("token"),
+              },
+            }
+          );
+
+          const commentUserData = await fetchCommentUser.json();
+          commentUser = commentUserData;
         }
 
-        const fetchCommentUser = await fetch(
-          `${state.baseUrl}/api/auth/user/${commentUserId}`,
-          {
-            headers: {
-              Authorization: "Bearer " + localStorage.getItem("token"),
-            },
-          }
-        );
         const user = await fetchUser.json();
-        const commentUser = await fetchCommentUser.json();
         posts.push({
           post: dataPosts[i],
           user: user[0],

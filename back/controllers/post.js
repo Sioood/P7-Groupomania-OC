@@ -152,28 +152,6 @@ exports.updateOne = (req, res) => {
 exports.deleteOne = (req, res) => {
   const id = req.query.id;
 
-  // Post.findAll({
-  //   where: { id: id },
-  // })
-  //   .then((post) => {
-  //     if (post) {
-  //       // delete post in the data base
-  //       Post.destroy({ id: id })
-  //         .then(() => res.status(200).json({ message: "deleted post" }))
-  //         .catch((error) =>
-  //           res.status(400).json({ error: "error with delete"})
-  //         );
-
-  //       // .then(() => res.status(200).json({ message: "deleted post" }))
-  //       // .catch((error) => res.status(400).send({ error: "error with delete" }));
-  //     }
-  //   })
-  //   .catch((err) => {
-  //     res.status(500).send({
-  //       message: "Error deleting post with id=" + id,
-  //     });
-  //   });
-
   Post.findByPk(id)
     .then((post) => {
       // const post = response.json()
@@ -190,17 +168,19 @@ exports.deleteOne = (req, res) => {
       }
 
       // delete file
-      const filename = post.imgUrl.split("/images/")[1];
-      fs.unlink(`images/${filename}`, () => {
-        // delete post in the data base
-        Post.destroy({ where: { id: id } })
-          .then(() => res.status(200).send({ message: "deleted post" }))
-          .catch((error) =>
-            res
-              .status(400)
-              .json({ error: "can't delete the post with this id=" + id })
-          );
-      });
+      if (post.imgUrl) {
+        const filename = post.imgUrl.split("/images/")[1];
+        fs.unlink(`images/${filename}`, () => {
+          // delete post in the data base
+          Post.destroy({ where: { id: id } })
+            .then(() => res.status(200).send({ message: "deleted post" }))
+            .catch(() =>
+              res
+                .status(400)
+                .json({ error: "can't delete the post with this id=" + id })
+            );
+        });
+      }
     })
-    .catch((error) => res.status(500).json({ error }));
+    .catch(() => res.status(500).json({ error: "error" }));
 };

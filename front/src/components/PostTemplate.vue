@@ -3,6 +3,12 @@
     <div class="wrapper-side-post">
       <a :href="profileUrl(post.post.UserId)">
         <img
+          v-if="post.user.imgUrl"
+          class="user"
+          :src="$store.state.baseUrl + post.user.imgUrl"
+          alt="groupomania user"
+        />
+        <img
           v-if="!post.user.imgUrl"
           class="user"
           src="@/assets/Groupomania-user.svg"
@@ -70,6 +76,7 @@
             v-for="comment in commentSent"
             :key="comment.id"
             class="comment item"
+            :data-id="comment.id"
           >
             <div class="wrapper-comment-edit">
               <button
@@ -85,15 +92,12 @@
               <button
                 @click="deletePost"
                 v-if="
-                  post.post.UserId == $store.state.user.id ||
+                  comment.UserId == $store.state.user.id ||
                   $store.state.user.admin == true
                 "
                 class="delete-comment"
               >
                 <img src="@/assets/bin.svg" alt="delete post" />
-                <!-- {{
-            post.post.UserId + " " + $store.state.user.id + " " + post.post.id
-          }} -->
               </button>
             </div>
             <!-- need to fetch info user for each comments ... -->
@@ -110,6 +114,13 @@
               <h4 class="comment-caption item-caption">
                 {{ comment.caption }}
               </h4>
+              <div class="wrapper-edit">
+                <button @click="cleanEdit" class="edit-back">Back</button>
+                <button @click="updatePost" class="edit-confirm">
+                  Confirm
+                </button>
+                <!-- Maybe add file button but update a post with modify the image is non-sense -->
+              </div>
             </div>
           </div>
 
@@ -118,12 +129,13 @@
             v-for="comment in post.comment"
             :key="comment.id"
             class="comment item"
+            :data-id="comment.id"
           >
             <div class="wrapper-comment-edit">
               <button
                 @click="editPost"
                 v-if="
-                  post.post.UserId == $store.state.user.id ||
+                  comment.UserId == $store.state.user.id ||
                   $store.state.user.admin == true
                 "
                 class="update-comment"
@@ -133,7 +145,7 @@
               <button
                 @click="deletePost"
                 v-if="
-                  post.post.UserId == $store.state.user.id ||
+                  comment.UserId == $store.state.user.id ||
                   $store.state.user.admin == true
                 "
                 class="delete-comment"
@@ -145,7 +157,7 @@
               </button>
             </div>
             <!-- need to fetch info user for each comments ... -->
-            <div class="comment-content">
+            <div class="comment-content item-content">
               <div
                 v-for="commentUser in post.commentUser"
                 :key="commentUser.name"
@@ -162,6 +174,13 @@
               <h4 class="comment-caption item-caption">
                 {{ comment.caption }}
               </h4>
+              <div class="wrapper-edit">
+                <button @click="cleanEdit" class="edit-back">Back</button>
+                <button @click="updatePost" class="edit-confirm">
+                  Confirm
+                </button>
+                <!-- Maybe add file button but update a post with modify the image is non-sense -->
+              </div>
             </div>
           </div>
           <div class="add-comment">
@@ -204,7 +223,6 @@ export default {
   },
   mounted() {
     this.userLogged = this.user;
-    console.log(this.userLogged);
   },
   computed: {
     ...mapGetters(["posts", "user"]),
@@ -245,24 +263,23 @@ export default {
     cleanEdit: function cleanEdit(edit) {
       console.log(edit);
       if (edit !== "clickOnAnotherPost" && edit !== "update") {
-        const postContent = edit.target.closest(".post-content");
-        const caption = postContent.querySelector(".caption");
+        const postContent = edit.target.closest(".item-content");
+        const caption = postContent.querySelector(".item-caption");
         caption.innerText = this.savedCaption;
       }
 
-      const postsContent = document.querySelectorAll(".post-content");
+      const postsContent = document.querySelectorAll(".item-content");
       postsContent.forEach((el) => {
         el.classList.remove("edit");
-        el.querySelector(".caption").removeAttribute("contenteditable");
+        el.querySelector(".item-caption").removeAttribute("contenteditable");
       });
     },
     editPost: function updatePost(edit) {
+      console.log(this.commentSent);
       this.cleanEdit("clickOnAnotherPost");
       const post = edit.target.closest("div.item");
-      console.log(post);
       const postContent = post.querySelector(".item-content");
       const caption = postContent.querySelector(".item-caption");
-      console.log(caption);
       this.savedCaption = caption.innerText;
       postContent.classList.add("edit");
       caption.setAttribute("contenteditable", "true");
@@ -270,7 +287,7 @@ export default {
     },
     updatePost: function updatePost(edit) {
       const post = edit.target.closest("div.item");
-      const caption = post.querySelector(".caption");
+      const caption = post.querySelector(".item-caption");
       const id = post.getAttribute("data-id");
 
       const postContent = { caption: caption.innerText };
@@ -425,7 +442,7 @@ span {
   border-radius: 15px;
 }
 
-.edit > .caption {
+.edit > .item-caption {
   padding: 0.2rem;
   border: 2px var(--accent-color) solid;
   border-radius: 2px;
@@ -472,6 +489,7 @@ span {
   border-radius: 500px;
   cursor: pointer;
 }
+
 .edit-back:hover {
   background: var(--accent-color);
   color: var(--third-color);
@@ -512,6 +530,18 @@ span {
   gap: 15px;
 }
 
+.comment-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 15px;
+}
+
+.comment-content > .wrapper-edit {
+  margin: 0 0 0 50px;
+}
+
 .wrapper-comment-edit {
   display: flex;
   flex-direction: column;
@@ -539,6 +569,7 @@ span {
 
 .comment-caption {
   margin: 0 0 0 50px;
+  width: 100%;
   font-weight: 300;
 }
 
