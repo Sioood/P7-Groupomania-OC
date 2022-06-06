@@ -1,5 +1,5 @@
 <template>
-  <div class="post" :data-id="dataId">
+  <div class="post item" :data-id="dataId">
     <div class="wrapper-side-post">
       <a :href="profileUrl(post.post.UserId)">
         <img
@@ -43,11 +43,11 @@
         </a>
         <div class="date">{{ postDate(post.post.createdAt) }}</div>
       </div>
-      <div class="post-content">
+      <div class="post-content item-content">
         <a
           :href="`/post?id=${post.post.id}`"
           title="Afficher le post"
-          class="caption"
+          class="caption item-caption"
         >
           {{ post.post.caption }}
         </a>
@@ -66,21 +66,11 @@
           <span></span>
 
           <!-- template for comment user to display when send -->
-          <!-- <div v-for="comment in commentSent" :key="comment.id" class="comment">
-            <div class="comment-user">
-              <img :src="user.imgUrl" alt="user" />
-              <h3>{{ userLogged.name + " " + userLogged.lastname }}</h3>
-              —
-              <div id="date">{{ postDate(new Date()) }}</div>
-            </div>
-            <h4 class="comment-caption">{{ comment.caption }}</h4>
-            <div class="wrapper-edit">
-              <button @click="cleanEdit" class="edit-back">Back</button>
-              <button @click="updatePost" class="edit-confirm">Confirm</button>
-            </div>
-          </div> -->
-
-          <div v-for="comment in commentSent" :key="comment.id" class="comment">
+          <div
+            v-for="comment in commentSent"
+            :key="comment.id"
+            class="comment item"
+          >
             <div class="wrapper-comment-edit">
               <button
                 @click="editPost"
@@ -107,7 +97,7 @@
               </button>
             </div>
             <!-- need to fetch info user for each comments ... -->
-            <div class="comment-content">
+            <div class="comment-content item-content">
               <div class="comment-user">
                 <img
                   :src="$store.state.baseUrl + userLogged.imgUrl"
@@ -117,7 +107,9 @@
                 —
                 <div id="date">{{ postDate(new Date()) }}</div>
               </div>
-              <h4 class="comment-caption">{{ comment.caption }}</h4>
+              <h4 class="comment-caption item-caption">
+                {{ comment.caption }}
+              </h4>
             </div>
           </div>
 
@@ -125,7 +117,7 @@
           <div
             v-for="comment in post.comment"
             :key="comment.id"
-            class="comment"
+            class="comment item"
           >
             <div class="wrapper-comment-edit">
               <button
@@ -167,7 +159,9 @@
                 —
                 <div id="date">{{ postDate(comment.createdAt) }}</div>
               </div>
-              <h4 class="comment-caption">{{ comment.caption }}</h4>
+              <h4 class="comment-caption item-caption">
+                {{ comment.caption }}
+              </h4>
             </div>
           </div>
           <div class="add-comment">
@@ -236,7 +230,7 @@ export default {
       return formattedDate;
     },
     deletePost: function deletePost(deleteButton) {
-      const post = deleteButton.target.closest("div.post");
+      const post = deleteButton.target.closest("div.item");
       const id = post.getAttribute("data-id");
       fetch(`${this.$store.state.baseUrl}/api/post/delete?id=${id}`, {
         method: "DELETE",
@@ -264,16 +258,18 @@ export default {
     },
     editPost: function updatePost(edit) {
       this.cleanEdit("clickOnAnotherPost");
-      const post = edit.target.closest("div.post");
-      const postContent = post.querySelector(".post-content");
-      const caption = postContent.querySelector(".caption");
+      const post = edit.target.closest("div.item");
+      console.log(post);
+      const postContent = post.querySelector(".item-content");
+      const caption = postContent.querySelector(".item-caption");
+      console.log(caption);
       this.savedCaption = caption.innerText;
       postContent.classList.add("edit");
       caption.setAttribute("contenteditable", "true");
       caption.focus();
     },
     updatePost: function updatePost(edit) {
-      const post = edit.target.closest("div.post");
+      const post = edit.target.closest("div.item");
       const caption = post.querySelector(".caption");
       const id = post.getAttribute("data-id");
 
@@ -294,7 +290,7 @@ export default {
     sendComment(id) {
       const comment = {
         caption: this.sendCaption,
-        UserId: this.user.id,
+        UserId: this.userLogged.id,
         InCommentId: id,
       };
       this.commentSent.push(comment);
