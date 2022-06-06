@@ -12,6 +12,7 @@ router.get("/user", userCtrl.users);
 router.post("/signup", userCtrl.signup);
 router.post("/login", userCtrl.login);
 router.put("/user/update", auth, multer, userCtrl.updateOne);
+router.put("/user/password", auth, userCtrl.changePassword);
 router.delete("/user/delete", auth, userCtrl.deleteOne);
 
 module.exports = router;

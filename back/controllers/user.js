@@ -1,3 +1,5 @@
+const { Op } = require("sequelize");
+
 const db = require("../model");
 const User = db.user;
 
@@ -116,9 +118,47 @@ exports.login = (req, res, next) => {
     .catch((error) => res.status(500).json({ error }));
 };
 
+exports.changePassword = (req, res) => {
+  const id = req.query.id;
+
+  const oldPassword = req.body.oldPassword;
+  const newPassword = req.body.newPassword;
+
+  User.findByPk(req.auth.userId)
+    .then((reqUser) => {
+      if (reqUser.id != id && reqUser.admin !== true) {
+        res
+          .status(403)
+          .send({ error: "you are not the good user for update this user" });
+        return;
+      }
+      User.findByPk(id).then((user) => {
+        bcrypt.compare(oldPassword, user.password, (match, different) => {
+          // bcrypt send match when user password and old password match
+          if (!match) {
+            res.status(406).json({ error: "Passwords don't matchs" });
+          } else {
+            bcrypt.hash(newPassword, 13, function (err, bcryptNewPassword) {
+              User.update(
+                { password: bcryptNewPassword },
+                { where: { id: id } }
+              )
+                .then(() =>
+                  res.status(201).json({
+                    confirmation: "change password with success",
+                  })
+                )
+                .catch((err) => res.status(500).json(err));
+            });
+          }
+        });
+      });
+    })
+    .catch(() => res.status(500).json({ error: "error" }));
+};
+
 exports.updateOne = (req, res) => {
   const id = req.query.id;
-  console.log(id + " " + JSON.stringify(req.body));
   if (!req.body) {
     res.status(500).send({
       error: "no body",
@@ -128,7 +168,6 @@ exports.updateOne = (req, res) => {
 
   User.findByPk(req.auth.userId)
     .then((reqUser) => {
-      console.log(reqUser.id != id);
       if (reqUser.id != id && reqUser.admin !== true) {
         res
           .status(403)
@@ -143,7 +182,7 @@ exports.updateOne = (req, res) => {
         }
 
         if (!req.file) {
-          updateUser(null);
+          updateUser(undefined);
         } else {
           updateUser(`/images/${req.file.filename}`);
         }

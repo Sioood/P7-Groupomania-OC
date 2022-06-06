@@ -3,15 +3,20 @@
     <div class="user">
       <div class="modify">
         <button
-          v-if="me == this.$store.state.user.id || admin === true"
+          v-if="me == user.id || admin === true"
           @click="deleteUser()"
           id="delete"
         >
           Supprimer l'utilisateur
         </button>
-        <img src="@/assets/Groupomania-user.svg" alt="" />
+        <img
+          v-if="user.imgUrl"
+          :src="$store.state.baseUrl + user.imgUrl"
+          alt=""
+        />
+        <img v-if="!user.imgUrl" src="@/assets/Groupomania-user.svg" alt="" />
         <button
-          v-if="me == this.$store.state.user.id || admin === true"
+          v-if="me == user.id || admin === true"
           @click="form = true"
           id="update"
         >
@@ -74,12 +79,14 @@
             name="currentpassword"
             id="currentpassword"
             placeholder="Mot de passe actuel"
+            v-model="userOldPassword"
           />
           <input
             type="password"
             name="newpassword"
             id="newpassword"
             placeholder="Nouveau mot de passe"
+            v-model="userNewPassword"
           />
         </div>
       </div>
@@ -102,12 +109,13 @@ export default {
   data() {
     return {
       me: localStorage.getItem("id"),
-      form: true,
+      form: false,
       userProfile: {},
       userName: undefined,
       userLastname: undefined,
       userEmail: undefined,
-      userJob: undefined,
+      userOldPassword: undefined,
+      userNewPassword: undefined,
     };
   },
   // beforeUpdate() {
@@ -184,8 +192,8 @@ export default {
 
       let form = new FormData();
 
-      if (this.file) {
-        form.append("file", this.file);
+      if (this.$refs.file.files[0]) {
+        form.append("file", this.$refs.file.files[0]);
       }
       if (this.userName) {
         form.append("name", this.userName);
@@ -196,8 +204,8 @@ export default {
       if (this.userEmail) {
         form.append("email", this.userEmail);
       }
-      if (this.userJob) {
-        form.append("job", this.userJob);
+      if (this.$refs.job.value) {
+        form.append("job", this.$refs.job.value);
       }
 
       if (router.currentRoute.path == "/me") {
@@ -219,6 +227,24 @@ export default {
             Authorization: "Bearer " + localStorage.getItem("token"),
           },
           body: form,
+        });
+      }
+
+      // password
+      let password = {
+        oldPassword: this.userOldPassword,
+        newPassword: this.userNewPassword,
+      };
+
+      if (password.oldPassword && password.newPassword) {
+        fetch(`${this.$store.state.baseUrl}/api/auth/user/password?id=${id}`, {
+          method: "PUT",
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(password),
         });
       }
     },
@@ -297,7 +323,8 @@ button {
 }
 
 img {
-  width: 250px;
+  width: 200px;
+  height: 200px;
 }
 
 /* form */

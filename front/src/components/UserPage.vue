@@ -9,21 +9,21 @@
       </div>
       <h2 class="job">{{ job }}</h2>
     </div>
-    <PostTemplate
-      v-for="post in posts"
-      :key="post.post.id"
-      :post="post"
-      :dataId="post.post.id"
-    />
-    <!-- <div class="wrapper-post" v-for="post in userPosts" :key="post.id">
-      <div id="date">{{ postDate(post.createdAt) }}</div>
-      <a class="post-content">
-        <div class="caption">
-          {{ post.caption }}
-        </div>
-        <img id="post-img" :src="post.imgUrl" alt="post img" />
-      </a>
-    </div> -->
+    <div class="userEvent">
+      <PostTemplate
+        v-for="post in posts"
+        :key="post.post.id"
+        :post="post"
+        :dataId="post.post.id"
+      />
+      <!-- <CommentTemplate
+        v-for="comment in posts.comments"
+        :commentUser="comment.commentUser"
+        :comment="comment"
+        :key="comment.id"
+        :commentId="comment.id"
+      /> -->
+    </div>
   </div>
 </template>
 

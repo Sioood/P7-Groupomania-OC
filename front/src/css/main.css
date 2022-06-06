@@ -37,6 +37,11 @@ html {
   font-size: 18px;
 }
 
+img {
+  background-size: cover;
+  object-fit: cover;
+}
+
 #app {
   margin: 3vh 0 0 0;
   width: 100%;
