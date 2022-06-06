@@ -2,6 +2,7 @@ const { Op } = require("sequelize");
 
 const db = require("../model");
 const Post = db.post;
+const User = db.user;
 
 const fs = require("fs");
 
@@ -152,34 +153,42 @@ exports.updateOne = (req, res) => {
 exports.deleteOne = (req, res) => {
   const id = req.query.id;
 
-  Post.findByPk(id)
-    .then((post) => {
-      // const post = response.json()
-      if (!post) {
-        res.status(404).send({ message: "post not found" });
-        return;
-      }
-
-      if (req.auth.userId !== post.UserId) {
-        res
-          .status(403)
-          .send({ error: "you are not the good user for delete this post" });
-        return;
-      }
-
-      // delete file
-      if (post.imgUrl) {
-        const filename = post.imgUrl.split("/images/")[1];
-        fs.unlink(`images/${filename}`);
-      }
-
-      Post.destroy({ where: { id: id } })
-        .then(() => res.status(200).send({ message: "deleted post" }))
-        .catch(() =>
+  User.findByPk(req.auth.userId)
+    .then((user) => {
+      Post.findByPk(id).then((post) => {
+        // const post = response.json()
+        if (!post) {
+          res.status(404).send({ message: "post not found" });
+          return;
+        }
+        console.log(user.admin !== true);
+        if (user.id !== post.UserId && user.admin !== true) {
           res
-            .status(400)
-            .json({ error: "can't delete the post with this id=" + id })
-        );
+            .status(403)
+            .send({ error: "you are not the good user for delete this post" });
+          return;
+        }
+
+        function deletePost() {
+          Post.destroy({ where: { id: id } })
+            .then(() => res.status(200).send({ message: "deleted post" }))
+            .catch(() =>
+              res
+                .status(400)
+                .json({ error: "can't delete the post with this id=" + id })
+            );
+        }
+
+        // delete file
+        if (post.imgUrl) {
+          const filename = post.imgUrl.split("/images/")[1];
+          fs.unlink(`images/${filename}`, () => {
+            deletePost();
+          });
+        } else {
+          deletePost();
+        }
+      });
     })
     .catch(() => res.status(500).json({ error: "error" }));
 };
