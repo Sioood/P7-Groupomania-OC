@@ -70,119 +70,23 @@
         />
         <div class="wrapper-comment">
           <span></span>
+          <CommentTemplate
+            v-for="comment in post.comments"
+            :commentUser="comment.commentUser"
+            :comment="comment"
+            :key="comment.id"
+            :commentId="comment.id"
+          />
 
-          <!-- template for comment user to display when send -->
-          <div
+          <CommentTemplate
             v-for="comment in commentSent"
+            :commentUser="loggedUser"
+            :comment="comment"
             :key="comment.id"
-            class="comment item"
-            :data-id="comment.id"
-          >
-            <div class="wrapper-comment-edit">
-              <button
-                @click="editPost"
-                v-if="
-                  post.post.UserId == $store.state.user.id ||
-                  $store.state.user.admin == true
-                "
-                class="update-comment"
-              >
-                <img src="@/assets/setting.svg" alt="update post" />
-              </button>
-              <button
-                @click="deletePost"
-                v-if="
-                  comment.UserId == $store.state.user.id ||
-                  $store.state.user.admin == true
-                "
-                class="delete-comment"
-              >
-                <img src="@/assets/bin.svg" alt="delete post" />
-              </button>
-            </div>
-            <!-- need to fetch info user for each comments ... -->
-            <div class="comment-content item-content">
-              <div class="comment-user">
-                <img
-                  :src="$store.state.baseUrl + userLogged.imgUrl"
-                  alt="user"
-                />
-                <h3>{{ userLogged.name + " " + userLogged.lastname }}</h3>
-                —
-                <div id="date">{{ postDate(new Date()) }}</div>
-              </div>
-              <h4 class="comment-caption item-caption">
-                {{ comment.caption }}
-              </h4>
-              <div class="wrapper-edit">
-                <button @click="cleanEdit" class="edit-back">Back</button>
-                <button @click="updatePost" class="edit-confirm">
-                  Confirm
-                </button>
-                <!-- Maybe add file button but update a post with modify the image is non-sense -->
-              </div>
-            </div>
-          </div>
+            :commentId="comment.id"
+          />
 
-          <!-- comment fetch -->
-          <div
-            v-for="comment in post.comment"
-            :key="comment.id"
-            class="comment item"
-            :data-id="comment.id"
-          >
-            <div class="wrapper-comment-edit">
-              <button
-                @click="editPost"
-                v-if="
-                  comment.UserId == $store.state.user.id ||
-                  $store.state.user.admin == true
-                "
-                class="update-comment"
-              >
-                <img src="@/assets/setting.svg" alt="update post" />
-              </button>
-              <button
-                @click="deletePost"
-                v-if="
-                  comment.UserId == $store.state.user.id ||
-                  $store.state.user.admin == true
-                "
-                class="delete-comment"
-              >
-                <img src="@/assets/bin.svg" alt="delete post" />
-                <!-- {{
-            post.post.UserId + " " + $store.state.user.id + " " + post.post.id
-          }} -->
-              </button>
-            </div>
-            <!-- need to fetch info user for each comments ... -->
-            <div class="comment-content item-content">
-              <div
-                v-for="commentUser in post.commentUser"
-                :key="commentUser.name"
-                class="comment-user"
-              >
-                <img
-                  :src="$store.state.baseUrl + commentUser.imgUrl"
-                  alt="user"
-                />
-                <h3>{{ commentUser.name + " " + commentUser.lastname }}</h3>
-                —
-                <div id="date">{{ postDate(comment.createdAt) }}</div>
-              </div>
-              <h4 class="comment-caption item-caption">
-                {{ comment.caption }}
-              </h4>
-              <div class="wrapper-edit">
-                <button @click="cleanEdit" class="edit-back">Back</button>
-                <button @click="updatePost" class="edit-confirm">
-                  Confirm
-                </button>
-                <!-- Maybe add file button but update a post with modify the image is non-sense -->
-              </div>
-            </div>
-          </div>
+          <!-- add comment -->
           <div class="add-comment">
             <h4>Ajouter un commmentaire</h4>
             <form action="">
@@ -211,18 +115,24 @@
 <script>
 import { mapGetters } from "vuex";
 
+import CommentTemplate from "./CommentTemplate.vue";
+
 export default {
   name: "PostTemplate",
+  components: {
+    CommentTemplate,
+  },
   props: ["post", "dataId"],
   data() {
     return {
       sendCaption: "",
       commentSent: [],
-      userLogged: this.user,
+      loggedUser: [this.user],
     };
   },
   mounted() {
-    this.userLogged = this.user;
+    this.loggedUser = this.user;
+    console.log(this.posts.comment);
   },
   computed: {
     ...mapGetters(["posts", "user"]),
@@ -261,7 +171,6 @@ export default {
       this.posts.splice(index, index + 1);
     },
     cleanEdit: function cleanEdit(edit) {
-      console.log(edit);
       if (edit !== "clickOnAnotherPost" && edit !== "update") {
         const postContent = edit.target.closest(".item-content");
         const caption = postContent.querySelector(".item-caption");
@@ -275,7 +184,6 @@ export default {
       });
     },
     editPost: function updatePost(edit) {
-      console.log(this.commentSent);
       this.cleanEdit("clickOnAnotherPost");
       const post = edit.target.closest("div.item");
       const postContent = post.querySelector(".item-content");
@@ -307,10 +215,9 @@ export default {
     sendComment(id) {
       const comment = {
         caption: this.sendCaption,
-        UserId: this.userLogged.id,
+        UserId: this.loggedUser.id,
         InCommentId: id,
       };
-      this.commentSent.push(comment);
       fetch(`${this.$store.state.baseUrl}/api/post/create`, {
         method: "POST",
         headers: {
@@ -319,7 +226,9 @@ export default {
           Authorization: "Bearer " + localStorage.getItem("token"),
         },
         body: JSON.stringify(comment),
-      });
+      })
+        .then((response) => response.json())
+        .then((comment) => this.commentSent.push(comment));
       this.sendCaption = "";
     },
   },
@@ -495,7 +404,6 @@ span {
   color: var(--third-color);
 }
 
-/* comment */
 .wrapper-comment {
   position: relative;
   width: 100%;
@@ -505,72 +413,9 @@ span {
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  gap: 15px;
+  gap: 30px;
   /* background: var(--third-color); */
   border-radius: 10px;
-}
-
-.comment-user {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 15px;
-}
-
-.comment-user > img {
-  width: 35px;
-}
-
-.comment {
-  margin: 0 0 0 15px;
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  justify-content: center;
-  gap: 15px;
-}
-
-.comment-content {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-  gap: 15px;
-}
-
-.comment-content > .wrapper-edit {
-  margin: 0 0 0 50px;
-}
-
-.wrapper-comment-edit {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-  gap: 15px;
-}
-
-.update-comment {
-  all: unset;
-  color: var(--main-color);
-  cursor: pointer;
-}
-
-.delete-comment {
-  all: unset;
-  color: var(--accent-color);
-  cursor: pointer;
-}
-
-.update-comment > img,
-.delete-comment > img {
-  width: 20px;
-}
-
-.comment-caption {
-  margin: 0 0 0 50px;
-  width: 100%;
-  font-weight: 300;
 }
 
 .add-comment {

@@ -170,17 +170,16 @@ exports.deleteOne = (req, res) => {
       // delete file
       if (post.imgUrl) {
         const filename = post.imgUrl.split("/images/")[1];
-        fs.unlink(`images/${filename}`, () => {
-          // delete post in the data base
-          Post.destroy({ where: { id: id } })
-            .then(() => res.status(200).send({ message: "deleted post" }))
-            .catch(() =>
-              res
-                .status(400)
-                .json({ error: "can't delete the post with this id=" + id })
-            );
-        });
+        fs.unlink(`images/${filename}`);
       }
+
+      Post.destroy({ where: { id: id } })
+        .then(() => res.status(200).send({ message: "deleted post" }))
+        .catch(() =>
+          res
+            .status(400)
+            .json({ error: "can't delete the post with this id=" + id })
+        );
     })
     .catch(() => res.status(500).json({ error: "error" }));
 };

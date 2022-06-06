@@ -158,6 +158,9 @@ export default new Vuex.Store({
             },
           }
         );
+
+        const user = await fetchUser.json();
+
         // fetch only 1 comment (most liked but function like not developed), for now is the lastest comment
         const fetchComment = await fetch(
           `${state.baseUrl}/api/post?comment=${dataPosts[i].id}&limit=${commentLimit}`,
@@ -167,36 +170,36 @@ export default new Vuex.Store({
             },
           }
         );
-        const comment = await fetchComment.json();
+        const commentsData = await fetchComment.json();
 
-        let commentUserId;
+        let comments = [];
 
-        let commentUser;
+        commentsData.forEach((comment) => {
+          getCommentUser();
 
-        if (comment[0]) {
-          commentUserId = comment[0].UserId;
+          async function getCommentUser() {
+            const fetchCommentUser = await fetch(
+              `${state.baseUrl}/api/auth/user/${comment.UserId}`,
+              {
+                headers: {
+                  Authorization: "Bearer " + localStorage.getItem("token"),
+                },
+              }
+            );
 
-          const fetchCommentUser = await fetch(
-            `${state.baseUrl}/api/auth/user/${commentUserId}`,
-            {
-              headers: {
-                Authorization: "Bearer " + localStorage.getItem("token"),
-              },
-            }
-          );
+            const commentUserData = await fetchCommentUser.json();
+            let commentUser = { commentUser: commentUserData[0] };
+            comments.push(Object.assign(comment, commentUser));
+          }
+        });
 
-          const commentUserData = await fetchCommentUser.json();
-          commentUser = commentUserData;
-        }
-
-        const user = await fetchUser.json();
         posts.push({
           post: dataPosts[i],
           user: user[0],
-          comment: comment,
-          commentUser: commentUser,
+          comments: comments,
         });
-        // console.log(posts);
+
+        console.log(posts);
       }
       state.posts = posts;
       // context.commit("GET_POSTS", posts);
