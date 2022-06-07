@@ -9,15 +9,39 @@
       </div>
       <h2 class="job">{{ job }}</h2>
     </div>
-    <div class="userEvent">
-      <PostTemplate
-        v-for="post in posts"
-        :key="post.post.id"
-        :post="post"
-        :dataId="post.post.id"
-      />
+    <div class="user-event">
+      <div class="nav-event">
+        <button id="posts" class="active" @click.prevent="eventPosts">
+          Posts
+        </button>
+        <button id="comments" @click.prevent="eventComments">
+          Commentaires
+        </button>
+      </div>
+      <div v-show="events == 'posts'" class="posts events">
+        <h1>Posts</h1>
+        <PostTemplate
+          v-for="post in posts"
+          :key="post.post.id"
+          :post="post"
+          :dataId="post.post.id"
+          :linkTo="post.post.id"
+          :addComment="false"
+        />
+      </div>
+      <div v-show="events == 'comments'" class="comments events">
+        <h1>Commentaires</h1>
+        <PostTemplate
+          v-for="post in userPosts"
+          :key="post.post.id"
+          :post="post"
+          :dataId="post.post.id"
+          :linkTo="post.post.InCommentId"
+          :addComment="false"
+        />
+      </div>
       <!-- <CommentTemplate
-        v-for="comment in posts.comments"
+        v-for="comment in userPosts"
         :commentUser="comment.commentUser"
         :comment="comment"
         :key="comment.id"
@@ -41,6 +65,7 @@ export default {
   data() {
     return {
       userId: localStorage.getItem("id"),
+      events: "posts",
     };
   },
   props: {
@@ -58,6 +83,14 @@ export default {
       userId: this.userId,
       limit: 0,
       comment: false,
+      commentLimit: null,
+    });
+
+    this.getPosts({
+      id: null,
+      userId: this.userId,
+      limit: 0,
+      comment: true,
       commentLimit: 1,
     });
   },
@@ -77,9 +110,38 @@ export default {
 
       return formattedDate;
     },
+    eventPosts: function eventPosts(event) {
+      event.target.classList.add("active");
+      const comments = document.getElementById("comments");
+      comments.classList.remove("active");
+      console.log(comments);
+      this.getPosts({
+        id: null,
+        userId: this.userId,
+        limit: 0,
+        comment: false,
+        commentLimit: 1,
+      });
+
+      this.events = "posts";
+    },
+    eventComments: function eventComments(event) {
+      event.target.classList.add("active");
+      const posts = document.getElementById("posts");
+      posts.classList.remove("active");
+      this.getPosts({
+        id: null,
+        userId: this.userId,
+        limit: 0,
+        comment: true,
+        commentLimit: 1,
+      });
+
+      this.events = "comments";
+    },
   },
   computed: {
-    ...mapGetters(["user", "posts"]),
+    ...mapGetters(["user", "posts", "userPosts"]),
   },
 };
 </script>
@@ -129,6 +191,52 @@ h2 {
   all: unset;
   color: var(--accent-color);
   cursor: pointer;
+}
+
+.user-event {
+  position: relative;
+  margin: 50px 0 0 0;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-around;
+  gap: 35px;
+}
+
+h1 {
+  margin: 0 0 0 30px;
+}
+
+.nav-event {
+  margin: 0 0 0 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 15px;
+}
+
+.nav-event > button {
+  all: unset;
+  padding: 10% 15% 10% 15%;
+  width: 100%;
+  border: 2px solid var(--main-color);
+  cursor: pointer;
+}
+
+.nav-event > button:hover,
+.nav-event > .active {
+  background: var(--third-color);
+}
+
+.events {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
 }
 
 .wrapper-post {

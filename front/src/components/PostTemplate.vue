@@ -51,7 +51,7 @@
       </div>
       <div class="post-content item-content">
         <a
-          :href="`/post?id=${post.post.id}`"
+          :href="`/post?id=${linkTo}`"
           title="Afficher le post"
           class="caption item-caption"
         >
@@ -68,7 +68,7 @@
           :src="$store.state.baseUrl + post.post.imgUrl"
           alt="post img"
         />
-        <div class="wrapper-comment">
+        <div v-if="addComment != false" class="wrapper-comment">
           <span></span>
           <CommentTemplate
             v-for="comment in post.comments"
@@ -122,7 +122,7 @@ export default {
   components: {
     CommentTemplate,
   },
-  props: ["post", "dataId"],
+  props: ["post", "dataId", "linkTo", "addComment"],
   data() {
     return {
       sendCaption: "",
@@ -168,6 +168,7 @@ export default {
       post.remove();
       let index = this.posts.findIndex((object) => object.post.id == id);
       this.posts.splice(index, index + 1);
+      console.log(this.posts);
     },
     cleanEdit: function cleanEdit(edit) {
       if (edit !== "clickOnAnotherPost" && edit !== "update") {
@@ -178,17 +179,21 @@ export default {
 
       const postsContent = document.querySelectorAll(".item-content");
       postsContent.forEach((el) => {
-        el.classList.remove("edit");
+        const post = el.closest(".item");
+
+        console.log(`test${post.className.split(" ")[0]}`);
+        el.classList.remove(`${post.className.split(" ")[0]}-edit`);
         el.querySelector(".item-caption").removeAttribute("contenteditable");
       });
     },
     editPost: function updatePost(edit) {
       this.cleanEdit("clickOnAnotherPost");
       const post = edit.target.closest("div.item");
+      console.log(post.className.split(" ")[0]);
       const postContent = post.querySelector(".item-content");
       const caption = postContent.querySelector(".item-caption");
       this.savedCaption = caption.innerText;
-      postContent.classList.add("edit");
+      postContent.classList.add(`${post.className.split(" ")[0]}-edit`);
       caption.setAttribute("contenteditable", "true");
       caption.focus();
     },
@@ -350,13 +355,13 @@ span {
   border-radius: 15px;
 }
 
-.edit > .item-caption {
+.post-edit > .item-caption {
   padding: 0.2rem;
   border: 2px var(--accent-color) solid;
   border-radius: 2px;
 }
 
-.edit > .wrapper-edit {
+.post-edit > .wrapper-edit {
   display: flex;
 }
 
@@ -458,5 +463,17 @@ span {
 
 .send-comment > img {
   height: 100%;
+}
+</style>
+
+<style>
+.comment-edit > .item-caption {
+  padding: 0.2rem;
+  border: 2px var(--accent-color) solid;
+  border-radius: 2px;
+}
+
+.comment-edit > .wrapper-edit {
+  display: flex;
 }
 </style>

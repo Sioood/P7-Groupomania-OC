@@ -34,7 +34,14 @@ exports.getAll = (req, res) => {
   }
 
   // limit
-  if (req.query.limit && req.query.limit != 0) {
+  if (req.query.limit == "null") {
+    limit = 0;
+    console.log(limit);
+  } else if (
+    req.query.limit &&
+    req.query.limit != 0 &&
+    req.query.limit != "null"
+  ) {
     limit = Number(req.query.limit);
   }
 

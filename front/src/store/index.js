@@ -199,9 +199,12 @@ export default new Vuex.Store({
           comments: comments,
         });
 
-        console.log(posts);
+        if (comment === true) {
+          state.userPosts = posts;
+        } else {
+          state.posts = posts;
+        }
       }
-      state.posts = posts;
       // context.commit("GET_POSTS", posts);
     },
   },

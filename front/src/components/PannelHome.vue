@@ -67,6 +67,16 @@ export default {
         });
       this.caption = "";
 
+      // reload posts
+
+      this.$parent.getPosts({
+        id: null,
+        userId: null,
+        limit: this.$parent.limit[0],
+        comment: false,
+        commentLimit: 1,
+      });
+
       // refresh posts but this new post don't display because not save at the good time
       // setTimeout(() => {
       //   location.reload();

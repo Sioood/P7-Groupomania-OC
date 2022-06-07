@@ -247,6 +247,10 @@ export default {
           body: JSON.stringify(password),
         });
       }
+
+      setTimeout(() => {
+        location.reload();
+      }, 10);
     },
   },
 };
@@ -264,7 +268,7 @@ export default {
 #user-page {
   margin: 0 0 5% 0;
   padding: 2%;
-  width: 50vw;
+  width: 95vw;
   height: 100%;
   display: flex;
   flex-direction: column;
