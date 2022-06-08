@@ -19,6 +19,9 @@
     <div id="dashboard">
       <Feed />
       <Pannel :url="`/me`" />
+      <div @click="openPannel()" id="open-pannel" class="">
+        <span></span><span></span>
+      </div>
     </div>
   </div>
 </template>
@@ -86,6 +89,18 @@ export default {
         commentLimit: 1,
       });
     },
+    openPannel() {
+      const pannel = document.getElementById("pannel");
+      const openPannel = document.getElementById("open-pannel");
+
+      if (openPannel.classList != "active") {
+        pannel.style.display = "flex";
+        console.log("e");
+      } else {
+        pannel.style.display = "none";
+      }
+      openPannel.classList.toggle("active");
+    },
   },
 };
 </script>
@@ -119,6 +134,7 @@ export default {
 }
 
 .wrapper-limit {
+  margin: 15px;
   padding: 1%;
   display: flex;
   flex-direction: row;
@@ -168,9 +184,10 @@ export default {
 #pannel {
   position: fixed;
   right: 0;
+  bottom: 5px;
   padding: 0 0 5vh 0;
   width: 25vmax;
-  height: 80vh;
+  height: 76.66vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -179,13 +196,62 @@ export default {
   /* flex: 1 1 200px; */
 }
 
-/* @media screen and (max-width: 768px) {
-  #home {
-    height: 100%;
+#open-pannel {
+  display: none;
+}
+
+@media screen and (max-width: 640px) {
+  #feed {
+    width: 100%;
+    min-height: 80.1vh;
+    margin: 0 0 11px 0;
+    padding: 0 0 5vh 0;
+    /* flex: 1 1 600px; */
+    overflow-y: scroll;
   }
 
-  #dashboard {
-    flex-direction: column;
+  #pannel {
+    position: fixed;
+    top: 50%;
+    left: 20%;
+    transform: translate(-20%, -50%);
+    width: 70%;
+    height: 95%;
+    display: none;
+    gap: 10px;
+    background: var(--smooth-color);
   }
-} */
+
+  #open-pannel {
+    position: fixed;
+    bottom: 15px;
+    right: 15px;
+    width: 50px;
+    height: 50px;
+    background: var(--main-color);
+    border-radius: 50%;
+    transition: all 0.05s ease-in-out;
+  }
+
+  #open-pannel.active {
+    background: var(--accent-color);
+    transform: rotate(45deg);
+  }
+
+  #open-pannel > span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 3px;
+    background: var(--third-color);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  #open-pannel > span:nth-child(1) {
+    /* height: 2.75px; */
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
+}
 </style>

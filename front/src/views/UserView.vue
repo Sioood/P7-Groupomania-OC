@@ -1,6 +1,11 @@
 <template>
   <div id="user-profile">
     <div class="user">
+      <img
+        v-if="user.imgUrl"
+        :src="$store.state.baseUrl + user.imgUrl"
+        alt=""
+      />
       <div class="modify">
         <button
           v-if="me == user.id || admin === true"
@@ -9,11 +14,6 @@
         >
           Supprimer l'utilisateur
         </button>
-        <img
-          v-if="user.imgUrl"
-          :src="$store.state.baseUrl + user.imgUrl"
-          alt=""
-        />
         <img v-if="!user.imgUrl" src="@/assets/Groupomania-user.svg" alt="" />
         <button
           v-if="me == user.id || admin === true"
@@ -296,10 +296,10 @@ export default {
 }
 
 .modify {
-  margin: 0 0 5% 0;
+  margin: 25px 0 25px 0;
   display: inline-flex;
   align-items: flex-end;
-  justify-content: flex;
+  justify-content: center;
   gap: 15px;
 }
 
@@ -341,7 +341,7 @@ img {
   padding: 3% 1% 1% 1%;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
   gap: 15px;
   background: var(--smooth-color);
@@ -454,5 +454,58 @@ input[type="file"]::-webkit-file-upload-button {
 button[type="submit"] {
   background: var(--main-color);
   color: var(--third-color);
+}
+</style>
+
+<style scoped>
+@media screen and (max-width: 640px) {
+  .modify {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modify > img {
+    width: 100px;
+    height: 100px;
+  }
+
+  .form-update {
+    padding: 5%;
+    width: 96vw;
+    height: 95vh;
+    gap: 0;
+    overflow: scroll;
+  }
+
+  .info > h2 {
+    margin: 25px 0 0 0;
+  }
+
+  input {
+    padding: 20px 10px 20px 10px;
+    height: 25px;
+  }
+
+  input[type="file"] {
+    padding: 0;
+    height: auto;
+    width: 100%;
+    background: transparent;
+  }
+
+  input[type="file"]::-webkit-file-upload-button {
+    padding: 15px 30px 15px 30px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--main-color);
+    color: var(--smooth-color);
+    border: none;
+    border-radius: 500px;
+    cursor: pointer;
+  }
 }
 </style>

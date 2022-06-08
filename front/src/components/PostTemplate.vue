@@ -351,8 +351,13 @@ span {
 }
 
 .post-img {
+  margin: 0;
+  padding: 0;
   width: 70%;
   border-radius: 15px;
+  /* border: 2px solid var(--main-color); */
+  outline: 2px solid var(--main-color);
+  outline-offset: -2px;
 }
 
 .post-edit > .item-caption {
@@ -475,5 +480,50 @@ span {
 
 .comment-edit > .wrapper-edit {
   display: flex;
+}
+</style>
+
+<style scoped>
+@media screen and (max-width: 640px) {
+  .post {
+    flex-direction: column;
+  }
+
+  .wrapper-side-post {
+    flex-direction: row;
+  }
+
+  .post-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+  }
+
+  .wrapper-text {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+  }
+
+  .wrapper-text > h3 {
+    margin: 0 0 0 15px;
+  }
+
+  .date {
+    margin: 0 0 19px 0;
+    width: 100%;
+    text-align: right;
+  }
+
+  .wrapper-comment {
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--main-color);
+    border-radius: 0;
+  }
+
+  .add-comment > form {
+    flex-direction: column;
+  }
 }
 </style>

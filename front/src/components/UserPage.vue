@@ -5,9 +5,10 @@
         <h1 class="fullname">{{ fullname }}</h1>
         <a :href="`mailto:${email}`" :title="email" class="email">
           <img src="@/assets/mail-icon.jpg" alt="mail icon" />
+          <h4>{{ email }}</h4>
         </a>
+        <h2 class="job">{{ job }}</h2>
       </div>
-      <h2 class="job">{{ job }}</h2>
     </div>
     <div class="user-event">
       <div class="nav-event">
@@ -169,7 +170,7 @@ h2 {
 
 .contact {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 15px;
@@ -177,6 +178,17 @@ h2 {
 
 .fullname {
   width: 100%;
+}
+
+.email {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  color: var(--main-color);
 }
 
 .update {
@@ -204,15 +216,12 @@ h2 {
   gap: 35px;
 }
 
-h1 {
-  margin: 0 0 0 30px;
-}
-
 .nav-event {
+  width: 15vw;
   margin: 0 0 0 15px;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
   gap: 15px;
 }
@@ -335,5 +344,34 @@ h1 {
 .wrapper-update > button:nth-child(1) {
   background: transparent;
   color: var(--accent-color);
+}
+</style>
+
+<style scoped>
+@media screen and (max-width: 640px) {
+  .contact {
+    margin: 0 0 15px 0;
+    flex-direction: column;
+  }
+
+  .fullname {
+    margin: 0;
+  }
+
+  .nav-event {
+    width: 50vw;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+  }
+
+  .user-event {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
 }
 </style>

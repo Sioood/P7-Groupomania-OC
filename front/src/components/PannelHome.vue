@@ -173,3 +173,38 @@ input[type="file"]::-webkit-file-upload-button {
   cursor: pointer;
 }
 </style>
+
+<style scoped>
+@media screen and (max-width: 640px) {
+  #search {
+    padding: 10px 15px 10px 15px;
+  }
+
+  .button {
+    padding: 10px 15px 10px 15px;
+  }
+
+  h3 {
+    margin: 15px 0 0 0;
+  }
+
+  .wrapper-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  input[type="file"] {
+    width: 90%;
+    font-size: 16px;
+  }
+
+  input[type="file"]::-webkit-file-upload-button {
+    padding: 10px 5px 10px 5px;
+  }
+
+  #submitPost {
+    width: 90%;
+    padding: 10px 5px 10px 5px;
+  }
+}
+</style>

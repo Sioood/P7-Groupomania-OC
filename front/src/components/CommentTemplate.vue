@@ -90,6 +90,7 @@ export default {
 
 .comment-user > img {
   width: 35px;
+  height: 35px;
 }
 
 .comment {
@@ -188,5 +189,46 @@ export default {
 .edit-back:hover {
   background: var(--accent-color);
   color: var(--third-color);
+}
+</style>
+
+<style scoped>
+@media screen and (max-width: 640px) {
+  .comment {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .wrapper-comment-edit {
+    padding: 15px 0 0 0;
+    width: 100%;
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+
+  .comment-content {
+    width: 100%;
+  }
+
+  .wrapper-comment-user {
+    width: 100%;
+  }
+
+  .comment-user {
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+  }
+
+  #date {
+    margin: 0 0 10px 0;
+    width: 100%;
+    text-align: right;
+  }
+
+  .comment-caption {
+    margin: 0;
+  }
 }
 </style>
