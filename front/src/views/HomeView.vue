@@ -228,6 +228,7 @@ export default {
     right: 15px;
     width: 50px;
     height: 50px;
+    display: flex;
     background: var(--main-color);
     border-radius: 50%;
     transition: all 0.05s ease-in-out;

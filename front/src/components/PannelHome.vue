@@ -32,6 +32,9 @@ export default {
   computed: {
     ...mapGetters(["posts", "user"]),
   },
+  // watchers: {
+  //   ...mapGetters(["posts", "user"]),
+  // },
   methods: {
     createPost() {
       const userId = this.$store.state.user.id;
@@ -63,24 +66,19 @@ export default {
             comments: [],
             user: this.user,
           };
+
           this.posts.push(formPost);
+
+          this.$parent.getPosts({
+            id: null,
+            userId: null,
+            limit: this.$parent.limit[0],
+            comment: false,
+            commentLimit: 1,
+          });
         });
+
       this.caption = "";
-
-      // reload posts
-
-      this.$parent.getPosts({
-        id: null,
-        userId: null,
-        limit: this.$parent.limit[0],
-        comment: false,
-        commentLimit: 1,
-      });
-
-      // refresh posts but this new post don't display because not save at the good time
-      // setTimeout(() => {
-      //   location.reload();
-      // }, 100);
     },
   },
 };

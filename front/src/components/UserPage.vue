@@ -217,7 +217,6 @@ h2 {
 }
 
 .nav-event {
-  width: 15vw;
   margin: 0 0 0 15px;
   display: flex;
   flex-direction: column;

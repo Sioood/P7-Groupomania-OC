@@ -125,6 +125,7 @@ export default {
   props: ["post", "dataId", "linkTo", "addComment"],
   data() {
     return {
+      savedCaption: "",
       sendCaption: "",
       commentSent: [],
       loggedUser: [this.user],

@@ -21,9 +21,7 @@ export default {
     PostTemplate,
   },
   data() {
-    return {
-      savedCaption: "",
-    };
+    return {};
   },
   computed: {
     ...mapGetters(["posts"]),
