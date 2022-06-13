@@ -93,12 +93,13 @@ export default {
       const pannel = document.getElementById("pannel");
       const openPannel = document.getElementById("open-pannel");
 
-      if (openPannel.classList != "active") {
-        pannel.style.display = "flex";
-        console.log("e");
-      } else {
-        pannel.style.display = "none";
-      }
+      // if (openPannel.classList != "active") {
+      //   pannel.style.display = "flex";
+      //   console.log("e");
+      // } else {
+      //   pannel.style.display = "none";
+      // }
+      pannel.classList.toggle("active");
       openPannel.classList.toggle("active");
     },
   },
@@ -220,6 +221,10 @@ export default {
     display: none;
     gap: 10px;
     background: var(--smooth-color);
+  }
+
+  #pannel.active {
+    display: flex;
   }
 
   #open-pannel {

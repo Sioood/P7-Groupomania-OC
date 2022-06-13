@@ -59,7 +59,7 @@
           :placeholder="user.email"
           v-model="userEmail"
         />
-        <input type="file" name="file" id="file" ref="file" />
+        <input type="file" name="file" id="file" ref="file" accept="image/*" />
         <select id="job" ref="job" class="input">
           <option selected disabled hidden>{{ user.job }}</option>
           <option

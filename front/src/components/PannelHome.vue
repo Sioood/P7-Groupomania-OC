@@ -11,7 +11,7 @@
       rows="10"
     ></textarea>
     <div class="wrapper-buttons">
-      <input type="file" name="file" ref="file" />
+      <input type="file" name="file" ref="file" accept="image/*" />
       <button @click="createPost()" id="submitPost">Poster</button>
     </div>
   </div>
@@ -32,9 +32,6 @@ export default {
   computed: {
     ...mapGetters(["posts", "user"]),
   },
-  // watchers: {
-  //   ...mapGetters(["posts", "user"]),
-  // },
   methods: {
     createPost() {
       const userId = this.$store.state.user.id;

@@ -75,7 +75,6 @@ export default {
   },
   mounted() {
     this.userLogged = this.user;
-    console.log(this.commentUser);
   },
 };
 </script>

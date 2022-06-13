@@ -1,5 +1,8 @@
 <template>
   <div id="feed">
+    <div v-if="!posts" class="nothing">
+      <h4>Aucun posts</h4>
+    </div>
     <PostTemplate
       v-for="post in posts"
       :key="post.post.id"
@@ -28,3 +31,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.nothing {
+  margin: 50px 0 0 0;
+}
+</style>

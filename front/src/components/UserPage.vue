@@ -21,6 +21,9 @@
       </div>
       <div v-show="events == 'posts'" class="posts events">
         <h1>Posts</h1>
+        <div v-if="!posts" class="nothing">
+          <h4>Aucun posts</h4>
+        </div>
         <PostTemplate
           v-for="post in posts"
           :key="post.post.id"
@@ -32,6 +35,9 @@
       </div>
       <div v-show="events == 'comments'" class="comments events">
         <h1>Commentaires</h1>
+        <div v-if="!userPosts" class="nothing">
+          <h4>Aucun commentaires</h4>
+        </div>
         <PostTemplate
           v-for="post in userPosts"
           :key="post.post.id"

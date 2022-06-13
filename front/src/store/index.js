@@ -16,11 +16,13 @@ export default new Vuex.Store({
     },
     job: [
       { name: "Ressources Humaines" },
-      { name: "Développeur" },
+      { name: "Développeur Front-End" },
+      { name: "Développeur Back-End" },
       { name: "Graphiste" },
+      { name: "Secrétaire" },
     ],
-    posts: [],
-    userPosts: [],
+    posts: null,
+    userPosts: null,
   },
   getters: {
     user(state) {
