@@ -25,20 +25,26 @@ export default {
     };
   },
   created() {
+    /**
+     * Check Token at creation
+     */
     this.$store.dispatch("checkToken");
-    console.log("created");
+    // console.log("created");
   },
   beforeUpdate() {
-    // console.log(router.currentRoute.path);
+    // // console.log(router.currentRoute.path);
     if (router.currentRoute.path == "/auth") {
       this.nav = false;
     } else {
       this.nav = true;
     }
     this.$store.dispatch("checkToken");
-    console.log("beforeUpdate");
+    // console.log("beforeUpdate");
   },
   methods: {
+    /**
+     * Logout function which remove all data saved for the user -> store, LocalStorage
+     */
     Logout() {
       // clear all error when logout because user not defined
       location.reload();

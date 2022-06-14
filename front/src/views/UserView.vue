@@ -123,6 +123,10 @@ export default {
   //   this.$store.dispatch("checkToken");
   // },
   mounted() {
+    /**
+     * return id of user query if user is in the user page and
+     * return his id if he is on his own profile
+     */
     if (router.currentRoute.path == "/me") {
       this.getUser(localStorage.getItem("id"));
     } else if (router.currentRoute.path == "/user") {
@@ -168,30 +172,46 @@ export default {
           }
         });
     },
+    /**
+     * Delete user with confirmation and check if is the good user or is admin
+     */
     deleteUser() {
+      // console.log(this.admin);
       // window.confirm("Voulez vous réelement supprimer l'utilisateur?");
 
-      if (confirm("Voulez vous réelement supprimer l'utilisateur?") == true) {
-        let id = this.userProfile.id;
-        let path = "/auth";
-        if (router.currentRoute.path == "/user") {
-          // after set function to get user with id give id
-          path = "/home";
-        }
+      if (
+        this.userProfile.id == localStorage.getItem("id") ||
+        this.admin == true
+      ) {
+        if (confirm("Voulez vous réelement supprimer l'utilisateur?") == true) {
+          let id = this.userProfile.id;
+          let path = "/auth";
+          if (router.currentRoute.path == "/user") {
+            // after set function to get user with id give id
+            path = "/home";
+          }
 
-        fetch(`${this.$store.state.baseUrl}/api/auth/user/delete?id=${id}`, {
-          method: "DELETE",
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
-        });
+          fetch(`${this.$store.state.baseUrl}/api/auth/user/delete?id=${id}`, {
+            method: "DELETE",
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          });
 
-        if (router.currentRoute.path == "/me") {
-          localStorage.removeItem("token");
+          if (router.currentRoute.path == "/me") {
+            localStorage.removeItem("token");
+          }
+          router.push(path);
         }
-        router.push(path);
       }
     },
+    /**
+     * Update User with form, form don't need to be fullfilled
+     * If the user want just to change his info just update his infos
+     * if he want to change his password just update it
+     * if both execute both function
+     * can save unecessary fetch
+     */
     updateUser() {
       let id = null;
 

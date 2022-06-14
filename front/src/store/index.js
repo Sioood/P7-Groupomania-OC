@@ -38,6 +38,9 @@ export default new Vuex.Store({
   },
   mutations: {
     SWAP_AUTH(state) {
+      /**
+       * Change Auth Method
+       */
       if (state.authMethod === "Login") {
         state.authMethod = "Signup";
         state.otherMethod = "login";
@@ -47,6 +50,9 @@ export default new Vuex.Store({
       }
     },
     AUTH(state, form) {
+      /**
+       *  Execute login or signup which the followed authMethod
+       */
       function login() {
         fetch(`${state.baseUrl}/api/auth/login`, {
           method: "POST",
@@ -69,6 +75,7 @@ export default new Vuex.Store({
             }
           })
           .then((data) => {
+            /** if res ok Set LocalStorage with id and token then push home */
             localStorage.setItem("token", data.token);
             localStorage.setItem("id", data.userId);
             router.push("/home");
@@ -104,6 +111,9 @@ export default new Vuex.Store({
     // },
   },
   actions: {
+    /**
+     * Check Token function triggered when the app is created
+     */
     checkToken: async ({ state }) => {
       let data = await fetch(`${state.baseUrl}/api/auth/token`, {
         headers: {
@@ -136,12 +146,17 @@ export default new Vuex.Store({
     auth(context, form = { form: null }) {
       context.commit("AUTH", form);
     },
-    // return to synchronous function
+    /**
+     * Get posts then user then comments to store into the state
+     */
     getPosts: async (
       { state },
       { id, userId, limit, comment, commentLimit }
     ) => {
       let posts = [];
+      /**
+       * fetch posts
+       */
       const fetchPosts = await fetch(
         `${state.baseUrl}/api/post?id=${id}&userId=${userId}&limit=${limit}&comment=${comment}`,
         {
@@ -152,6 +167,9 @@ export default new Vuex.Store({
       );
       const dataPosts = await fetchPosts.json();
 
+      /**
+       * fetch user who created the post for each post
+       */
       for (let i = 0; i < dataPosts.length; i++) {
         const fetchUser = await fetch(
           `${state.baseUrl}/api/auth/user/${dataPosts[i].UserId}`,
@@ -164,7 +182,9 @@ export default new Vuex.Store({
 
         const user = await fetchUser.json();
 
-        // fetch only 1 comment (most liked but function like not developed), for now is the lastest comment
+        /**
+         * For now fetch only 1 comment (most liked but function like not developed), for now is the lastest comment
+         */
         const fetchComment = await fetch(
           `${state.baseUrl}/api/post?comment=${dataPosts[i].id}&limit=${commentLimit}`,
           {
@@ -176,6 +196,10 @@ export default new Vuex.Store({
         const commentsData = await fetchComment.json();
 
         let comments = [];
+
+        /**
+         * Fetch user of comment
+         */
 
         commentsData.forEach((comment) => {
           getCommentUser();
@@ -196,6 +220,9 @@ export default new Vuex.Store({
           }
         });
 
+        /**
+         * Push to the state
+         */
         posts.push({
           post: dataPosts[i],
           user: user[0],

@@ -47,6 +47,9 @@ export default {
     };
   },
   created() {
+    /**
+     * Get posts with first limit
+     */
     this.getPosts({
       id: null,
       userId: null,
@@ -75,11 +78,15 @@ export default {
     //     })
     //     .then((user) => {
     //       this.userLogged = user[0];
-    //       console.log(user[0]);
+    //       // console.log(user[0]);
     //     });
-    //   console.log(this.userLogged);
-    //   console.log(this.user);
+    //   // console.log(this.userLogged);
+    //   // console.log(this.user);
     // },
+
+    /**
+     * Reload posts with the limit selected by the user
+     */
     updateLimit() {
       this.getPosts({
         id: null,
@@ -89,13 +96,17 @@ export default {
         commentLimit: 1,
       });
     },
+
+    /**
+     * When user is on mobile diplay pannel for create post with a button
+     */
     openPannel() {
       const pannel = document.getElementById("pannel");
       const openPannel = document.getElementById("open-pannel");
 
       // if (openPannel.classList != "active") {
       //   pannel.style.display = "flex";
-      //   console.log("e");
+      //   // console.log("e");
       // } else {
       //   pannel.style.display = "none";
       // }

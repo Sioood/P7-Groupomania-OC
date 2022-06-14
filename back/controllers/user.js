@@ -213,7 +213,7 @@ exports.updateOne = (req, res) => {
 exports.deleteOne = (req, res) => {
   const id = req.query.id;
 
-  // console.log(id);
+  // // console.log(id);
 
   User.findByPk(req.auth.userId)
     .then((reqUser) => {

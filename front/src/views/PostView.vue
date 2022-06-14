@@ -38,7 +38,7 @@ export default {
   methods: {
     ...mapActions(["getPosts"]),
     logPost() {
-      console.log(this.posts);
+      // console.log(this.posts);
     },
   },
 };

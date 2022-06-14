@@ -37,13 +37,19 @@ export default {
       const userId = this.$store.state.user.id;
       this.file = this.$refs.file.files[0];
 
-      // try new FormData()
+      /**
+       * Set formData to send with multipart-formdata
+       */
 
       let form = new FormData();
 
       form.append("caption", this.caption);
       form.append("file", this.file);
       form.append("UserId", userId);
+
+      /**
+       * minimum of a caption or an image for create a post
+       */
 
       if (!this.caption && !this.$refs.file.files[0]) {
         alert("veuillez ne pas envoyer un post vide");
@@ -63,6 +69,10 @@ export default {
             comments: [],
             user: this.user,
           };
+
+          /**
+           * Push new post in store and reload all posts
+           */
 
           this.posts.push(formPost);
 

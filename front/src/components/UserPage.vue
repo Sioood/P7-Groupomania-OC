@@ -92,14 +92,6 @@ export default {
       comment: false,
       commentLimit: null,
     });
-
-    this.getPosts({
-      id: null,
-      userId: this.userId,
-      limit: 0,
-      comment: true,
-      commentLimit: 1,
-    });
   },
   methods: {
     ...mapActions(["getPosts", "checkToken"]),
@@ -117,11 +109,14 @@ export default {
 
       return formattedDate;
     },
+    /**
+     * fetch posts events
+     */
     eventPosts: function eventPosts(event) {
       event.target.classList.add("active");
       const comments = document.getElementById("comments");
       comments.classList.remove("active");
-      console.log(comments);
+      // console.log(comments);
       this.getPosts({
         id: null,
         userId: this.userId,
@@ -132,6 +127,9 @@ export default {
 
       this.events = "posts";
     },
+    /**
+     * fetch comments events
+     */
     eventComments: function eventComments(event) {
       event.target.classList.add("active");
       const posts = document.getElementById("posts");

@@ -13,9 +13,9 @@ const sequelize = new Sequelize("groupomania", sqlUser, sqlPassword, {
 
 // try {
 //   sequelize.authenticate();
-//   console.log('Connecté à la base de données MySQL!');
+//   // console.log('Connecté à la base de données MySQL!');
 //   sequelize.query("SELECT * FROM `user` WHERE `id` = 1").then(([results, metadata]) => {
-//       console.log(results);
+//       // console.log(results);
 //     })
 // } catch (error) {
 //   console.error('Impossible de se connecter, erreur suivante :', error);

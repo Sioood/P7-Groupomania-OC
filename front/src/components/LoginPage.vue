@@ -79,7 +79,10 @@ export default {
   methods: {
     ...mapActions(["swapAuth", "checkToken"]),
     auth() {
-      // regex
+      /**
+      All Regex for secure inputs form
+      */
+
       const regexMail = /([a-zA-Z0-9-_.]{5,})@([a-zA-Z]+)\.([a-zA-Z]{2,9})/;
       const regexPassword = /([a-zA-Z0-9-_.?!]{5,})/;
       const regexText = /([a-zA-Z]{3,})/;
@@ -91,6 +94,12 @@ export default {
         this.$refs.password.value.match(regexPassword);
 
       const auth = this.$store.state.authMethod;
+
+      /**
+      Split Login inputs of Signup inputs
+
+      for each error set display an error message
+       */
 
       if (auth == "Login" && emptyLogin) {
         if (regexLogin) {

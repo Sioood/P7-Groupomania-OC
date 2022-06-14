@@ -78,6 +78,8 @@
             :commentId="comment.id"
           />
 
+          <!-- Separe comments of comments sent 
+          because only one comment displayed but the user need to see his comments and the latest comments-->
           <CommentTemplate
             v-for="comment in commentSent"
             :commentUser="loggedUser"
@@ -122,9 +124,18 @@ export default {
   components: {
     CommentTemplate,
   },
+  /**
+   * Props LinkTo is link of the post,
+   * like for user page which display comments events
+   * with post template we can link to the parent post
+   */
   props: ["post", "dataId", "linkTo", "addComment"],
   data() {
     return {
+      /**
+       * Save Caption if the user modify it but back,
+       * the content editable don't keep in memory the latest caption
+       */
       savedCaption: "",
       sendCaption: "",
       commentSent: [],
@@ -138,11 +149,17 @@ export default {
     ...mapGetters(["posts", "user"]),
   },
   methods: {
+    /**
+     * Check if user of the post is the user logged and send an url for correspond
+     */
     profileUrl(postUserId) {
       if (postUserId == this.user.id) {
         return `/me`;
       } else return `/user?id=${postUserId}`;
     },
+    /**
+     * Check the date of a post and if the post if in the same day just diplay time
+     */
     postDate(date) {
       const today = new Date();
 
@@ -157,6 +174,9 @@ export default {
       }
       return formattedDate;
     },
+    /**
+     * Delete post and remove of the DOM
+     */
     deletePost: function deletePost(deleteButton) {
       const post = deleteButton.target.closest("div.item");
       const id = post.getAttribute("data-id");
@@ -169,8 +189,10 @@ export default {
       post.remove();
       let index = this.posts.findIndex((object) => object.post.id == id);
       this.posts.splice(index, index + 1);
-      console.log(this.posts);
     },
+    /**
+     * display none the button after event (back of update ) the update
+     */
     cleanEdit: function cleanEdit(edit) {
       if (edit !== "clickOnAnotherPost" && edit !== "update") {
         const postContent = edit.target.closest(".item-content");
@@ -182,15 +204,18 @@ export default {
       postsContent.forEach((el) => {
         const post = el.closest(".item");
 
-        console.log(`test${post.className.split(" ")[0]}`);
+        // console.log(`test${post.className.split(" ")[0]}`);
         el.classList.remove(`${post.className.split(" ")[0]}-edit`);
         el.querySelector(".item-caption").removeAttribute("contenteditable");
       });
     },
+    /**
+     * Set the content editable and display validator buttons
+     */
     editPost: function updatePost(edit) {
       this.cleanEdit("clickOnAnotherPost");
       const post = edit.target.closest("div.item");
-      console.log(post.className.split(" ")[0]);
+      // console.log(post.className.split(" ")[0]);
       const postContent = post.querySelector(".item-content");
       const caption = postContent.querySelector(".item-caption");
       this.savedCaption = caption.innerText;
@@ -198,6 +223,9 @@ export default {
       caption.setAttribute("contenteditable", "true");
       caption.focus();
     },
+    /**
+     * Update the post after validation
+     */
     updatePost: function updatePost(edit) {
       const post = edit.target.closest("div.item");
       const caption = post.querySelector(".item-caption");

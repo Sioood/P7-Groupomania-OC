@@ -61,8 +61,6 @@
 </template>
 
 <script>
-// import { mapGetters } from "vuex";
-
 export default {
   name: "PostTemplate",
   props: ["user", "commentUser", "comment", "commentId"],
@@ -74,6 +72,9 @@ export default {
     };
   },
   mounted() {
+    /**
+    Get user logged by parent
+     */
     this.userLogged = this.user;
   },
 };

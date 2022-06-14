@@ -36,7 +36,7 @@ exports.getAll = (req, res) => {
   // limit
   if (req.query.limit == "null") {
     limit = 0;
-    console.log(limit);
+    // console.log(limit);
   } else if (
     req.query.limit &&
     req.query.limit != 0 &&
@@ -47,7 +47,7 @@ exports.getAll = (req, res) => {
 
   let where = { id: id, UserId: UserId, InCommentId: InCommentId };
 
-  // console.log(where);
+  // // console.log(where);
 
   let conditions = {
     where: where,
@@ -86,7 +86,7 @@ exports.create = (req, res) => {
     file = `/images/${req.file.filename}`;
   }
 
-  console.log(file);
+  // console.log(file);
 
   const post = {
     caption: req.body.caption,
@@ -95,7 +95,7 @@ exports.create = (req, res) => {
     InCommentId: req.body.InCommentId,
   };
 
-  console.log(post);
+  // console.log(post);
 
   Post.create(post)
     .then((data) => {
@@ -126,7 +126,7 @@ exports.updateOne = (req, res) => {
           res.status(404).send({ message: "post not found" });
           return;
         }
-        // console.log(user.admin !== true);
+        // // console.log(user.admin !== true);
         if (user.id != post.UserId && user.admin !== true) {
           res
             .status(403)
@@ -187,7 +187,7 @@ exports.deleteOne = (req, res) => {
           res.status(404).send({ message: "post not found" });
           return;
         }
-        // console.log(user.admin !== true);
+        // // console.log(user.admin !== true);
         if (user.id != post.UserId && user.admin !== true) {
           res
             .status(403)

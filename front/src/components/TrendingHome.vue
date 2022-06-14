@@ -1,4 +1,6 @@
+
 <template>
+<!-- Template for possible trending post such most liked when this function added in the app -->
   <div id="trending">
     <h2>Trending</h2>
     <a
