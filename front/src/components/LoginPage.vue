@@ -81,10 +81,14 @@ export default {
     auth() {
       // regex
       const regexMail = /([a-zA-Z0-9-_.]{5,})@([a-zA-Z]+)\.([a-zA-Z]{2,9})/;
+      const regexPassword = /([a-zA-Z0-9-_.?!]{5,})/;
+      const regexText = /([a-zA-Z]{3,})/;
 
       // empty validator for login inputs
       const emptyLogin = this.$refs.email.value && this.$refs.password.value;
-      const regexLogin = this.$refs.email.value.match(regexMail);
+      const regexLogin =
+        this.$refs.email.value.match(regexMail) &&
+        this.$refs.password.value.match(regexPassword);
 
       const auth = this.$store.state.authMethod;
 
@@ -107,8 +111,15 @@ export default {
           this.$refs.lastname.value &&
           this.$refs.job.value != "Job" &&
           emptyLogin;
+
+        const regexSignup =
+          this.$refs.name.value.match(regexText) &&
+          this.$refs.lastname.value.match(regexText) &&
+          emptySignup &&
+          regexLogin;
+
         if (emptySignup) {
-          if (regexLogin) {
+          if (regexSignup) {
             const form = {
               name: this.$refs.name.value,
               lastname: this.$refs.lastname.value,
@@ -118,9 +129,11 @@ export default {
             };
             this.$store.dispatch("auth", form);
             return;
+          } else {
+            this.$store.state.authError =
+              "Veuillez rentrer un email, noms et mot de passe valide. Le mot de passe peut contenir : (Lettres, Chiffres et Caractères spéciaux correspondants : -_!.?)";
+            return;
           }
-          this.$store.state.authError = "Veuillez rentrer un email valide.";
-          return;
         }
       }
       this.$store.state.authError = "Veuillez remplir tout les champs.";

@@ -47,7 +47,7 @@ exports.getAll = (req, res) => {
 
   let where = { id: id, UserId: UserId, InCommentId: InCommentId };
 
-  console.log(where);
+  // console.log(where);
 
   let conditions = {
     where: where,
@@ -118,40 +118,60 @@ exports.updateOne = (req, res) => {
     });
     return;
   }
-  Post.update(
-    {
-      // id: id,
-      caption: req.body.caption,
-      // imgUrl: `${req.protocol}://${req.get("host")}/images/${
-      //   req.file.filename
-      // }`,
-      // UserId: req.auth.userId,
-      // InCommentId: req.body.InCommentId,
-    },
-    {
-      where: { id: id },
-    }
-  )
-    .then((post) => {
-      if (post) {
-        res.status(200).send({ message: "Post was updated successfully" });
-        // res.send({
-        //   message: "Post was updated successfully.",
-        // });
-      } else {
-        res.status(500).send({
-          error: `Cannot update Post with id=${id}. Maybe Post was not found or req.body is empty!`,
-        });
-        // res.send({
-        //   error: `Cannot update Post with id=${id}. Maybe Post was not found or req.body is empty!`,
-        // });
-      }
-    })
-    .catch((err) => {
-      res.status(500).send({
-        error: "Error updating Post with id=" + id,
+
+  User.findByPk(req.auth.userId)
+    .then((user) => {
+      Post.findByPk(id).then((post) => {
+        if (!post) {
+          res.status(404).send({ message: "post not found" });
+          return;
+        }
+        // console.log(user.admin !== true);
+        if (user.id != post.UserId && user.admin !== true) {
+          res
+            .status(403)
+            .send({ error: "you are not the good user for update this post" });
+          return;
+        }
+
+        Post.update(
+          {
+            caption: req.body.caption,
+            // don't give the possibility of modify img because post can have non sense
+
+            // imgUrl: `${req.protocol}://${req.get("host")}/images/${
+            //   req.file.filename
+            // }`,
+          },
+          {
+            where: { id: id },
+          }
+        )
+          .then((post) => {
+            if (post) {
+              res
+                .status(200)
+                .send({ message: "Post was updated successfully" });
+              // res.send({
+              //   message: "Post was updated successfully.",
+              // });
+            } else {
+              res.status(500).send({
+                error: `Cannot update Post with id=${id}. Maybe Post was not found or req.body is empty!`,
+              });
+              // res.send({
+              //   error: `Cannot update Post with id=${id}. Maybe Post was not found or req.body is empty!`,
+              // });
+            }
+          })
+          .catch((err) => {
+            res.status(500).send({
+              error: "Error updating Post with id=" + id,
+            });
+          });
       });
-    });
+    })
+    .catch(() => res.status(500).json({ error: "error" }));
 };
 
 // Delete
@@ -167,7 +187,7 @@ exports.deleteOne = (req, res) => {
           res.status(404).send({ message: "post not found" });
           return;
         }
-        console.log(user.admin !== true);
+        // console.log(user.admin !== true);
         if (user.id != post.UserId && user.admin !== true) {
           res
             .status(403)

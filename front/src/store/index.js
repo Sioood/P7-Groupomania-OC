@@ -15,6 +15,7 @@ export default new Vuex.Store({
       lastname: "connected",
     },
     job: [
+      { name: "Chargé de Communication" },
       { name: "Ressources Humaines" },
       { name: "Développeur Front-End" },
       { name: "Développeur Back-End" },

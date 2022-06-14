@@ -168,7 +168,7 @@ exports.updateOne = (req, res) => {
 
   User.findByPk(req.auth.userId)
     .then((reqUser) => {
-      if (reqUser.id != id && reqUser.admin !== true) {
+      if (reqUser.id != id && reqUser.admin != true) {
         res
           .status(403)
           .send({ error: "you are not the good user for update this user" });
@@ -208,72 +208,58 @@ exports.updateOne = (req, res) => {
       });
     })
     .catch(() => res.status(500).json({ error: "error" }));
-
-  // User.update(
-  //   {
-  //     name: req.body.name,
-  //     lastname: req.body.lastname,
-  //     email: req.body.email,
-  //     job: req.body.job,
-  //   },
-  //   {
-  //     where: { id: id },
-  //   }
-  // )
-  //   .then((user) => {
-  //     if (user) {
-  //       res.status(200).send({ message: "User was updated successfully" });
-  //     } else {
-  //       res.status(500).send({
-  //         error: `Cannot update User with id=${id}. Maybe User was not found or req.body is empty!`,
-  //       });
-  //     }
-  //   })
-  //   .catch((err) => {
-  //     res.status(500).send({
-  //       error: "Error updating Post with id=" + id,
-  //     });
-  //   });
 };
 
 exports.deleteOne = (req, res) => {
   const id = req.query.id;
 
-  User.findByPk(id)
-    .then((user) => {
-      // const post = response.json()
-      if (!user) {
-        res.status(404).send({ message: "user not found" });
-        return;
-      }
+  // console.log(id);
 
-      if (req.auth.userId !== user.id) {
-        res
-          .status(403)
-          .send({ error: "you are not the good user for delete this user" });
-        return;
-      }
+  User.findByPk(req.auth.userId)
+    .then((reqUser) => {
+      User.findByPk(id)
+        .then((user) => {
+          // const post = response.json()
+          if (!user) {
+            res.status(404).send({ message: "user not found" });
+            return;
+          }
 
-      User.destroy({ where: { id: id } })
-        .then(() => res.status(200).send({ message: "deleted user" }))
-        .catch((error) =>
-          res
-            .status(400)
-            .json({ error: "can't delete the user with this id=" + id })
-        );
+          if (reqUser.id != id && reqUser.admin != true) {
+            res.status(403).send({
+              error: "you are not the good user for delete this user",
+            });
+            return;
+          }
 
-      // delete file
-      // const filename = user.imgUrl.split("/images/")[1];
-      // fs.unlink(`images/${filename}`, () => {
-      //   // delete post in the data base
-      //   User.destroy({ where: { id: id } })
-      //     .then(() => res.status(200).send({ message: "deleted user" }))
-      //     .catch((error) =>
-      //       res
-      //         .status(400)
-      //         .json({ error: "can't delete the user with this id=" + id })
-      //     );
-      // });
+          User.destroy({ where: { id: id } })
+            .then(() => res.status(200).send({ message: "deleted user" }))
+            .catch((error) =>
+              res
+                .status(400)
+                .json({ error: "can't delete the user with this id=" + id })
+            );
+
+          if (req.file) {
+            deleteImgUser(req.file.filename);
+          }
+
+          function deleteImgUser(img) {
+            // delete file
+            const filename = img.split("/images/")[1];
+            fs.unlink(`images/${filename}`, () => {
+              // delete post in the data base
+              User.destroy({ where: { id: id } })
+                .then(() => res.status(200).send({ message: "deleted user" }))
+                .catch((error) =>
+                  res
+                    .status(400)
+                    .json({ error: "can't delete the user with this id=" + id })
+                );
+            });
+          }
+        })
+        .catch((error) => res.status(500).json({ error }));
     })
-    .catch((error) => res.status(500).json({ error }));
+    .catch(() => res.status(500).json({ error: "error" }));
 };

@@ -148,13 +148,13 @@ export default {
 
       const postDate = new Date(date);
       let formattedDate = postDate.toLocaleString();
+
       if (
         today.toLocaleString().split(",")[0] ==
         postDate.toLocaleString().split(",")[0]
       ) {
         formattedDate = postDate.toLocaleString().split(",")[1];
       }
-
       return formattedDate;
     },
     deletePost: function deletePost(deleteButton) {

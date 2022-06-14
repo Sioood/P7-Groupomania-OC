@@ -40,14 +40,14 @@
             type="text"
             name="name"
             id="name"
-            :placeholder="user.name"
+            :placeholder="userProfile.name"
             v-model="userName"
           />
           <input
             type="text"
             name="lastname"
             id="lastname"
-            :placeholder="user.lastname"
+            :placeholder="userProfile.lastname"
             v-model="userLastname"
           />
         </div>
@@ -56,12 +56,12 @@
           type="email"
           name="email"
           id="email"
-          :placeholder="user.email"
+          :placeholder="userProfile.email"
           v-model="userEmail"
         />
         <input type="file" name="file" id="file" ref="file" accept="image/*" />
         <select id="job" ref="job" class="input">
-          <option selected disabled hidden>{{ user.job }}</option>
+          <option selected disabled hidden>{{ userProfile.job }}</option>
           <option
             v-for="item in $store.state.job"
             :key="item.name"
@@ -114,6 +114,7 @@ export default {
       userName: undefined,
       userLastname: undefined,
       userEmail: undefined,
+      userJob: undefined,
       userOldPassword: undefined,
       userNewPassword: undefined,
     };
@@ -135,7 +136,7 @@ export default {
       get() {
         let fullname = "";
         if (router.currentRoute.path == "/me") {
-          fullname = this.$store.state.user.name + " " + this.user.lastname;
+          fullname = this.user.name + " " + this.user.lastname;
         } else {
           fullname = this.userProfile.name + " " + this.userProfile.lastname;
         }
@@ -159,15 +160,19 @@ export default {
           return response.json();
         })
         .then((user) => {
-          this.userProfile = user[0];
-          console.log(this.userProfile.admin);
+          // check if user exist, if not display 404 page
+          if (user.length != 0) {
+            this.userProfile = user[0];
+          } else {
+            router.push("/404");
+          }
         });
     },
     deleteUser() {
       // window.confirm("Voulez vous réelement supprimer l'utilisateur?");
 
       if (confirm("Voulez vous réelement supprimer l'utilisateur?") == true) {
-        let id = this.user.id;
+        let id = this.userProfile.id;
         let path = "/auth";
         if (router.currentRoute.path == "/user") {
           // after set function to get user with id give id
@@ -192,6 +197,8 @@ export default {
 
       let form = new FormData();
 
+      this.userJob = this.$refs.job.value;
+
       if (this.$refs.file.files[0]) {
         form.append("file", this.$refs.file.files[0]);
       }
@@ -205,7 +212,7 @@ export default {
         form.append("email", this.userEmail);
       }
       if (this.$refs.job.value) {
-        form.append("job", this.$refs.job.value);
+        form.append("job", this.userJob);
       }
 
       if (router.currentRoute.path == "/me") {
@@ -250,7 +257,7 @@ export default {
 
       setTimeout(() => {
         location.reload();
-      }, 10);
+      }, 100);
     },
   },
 };

@@ -29,7 +29,7 @@ export default {
     console.log("created");
   },
   beforeUpdate() {
-    console.log(router.currentRoute.path);
+    // console.log(router.currentRoute.path);
     if (router.currentRoute.path == "/auth") {
       this.nav = false;
     } else {
