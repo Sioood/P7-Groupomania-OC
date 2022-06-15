@@ -8,6 +8,10 @@ const jwt = require("jsonwebtoken");
 
 // verify token and throw
 
+/**
+ *  Check token saved in the local storage, similar back end like get user
+ */
+
 exports.token = (req, res) => {
   const id = req.auth.userId;
   var condition = { id: id };
@@ -28,6 +32,10 @@ exports.token = (req, res) => {
 
 // get all users
 
+/**
+ *  Get users, find all users with no conditions
+ */
+
 exports.users = (req, res) => {
   // const name = req.query.name;
   // var condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
@@ -37,13 +45,16 @@ exports.users = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving tutorials.",
+        message: err.message || "Some error occurred while retrieving users.",
       });
     });
 };
 
 // get one user with id or set other conditions later
+
+/**
+ * Get user with id and return only attributes selected
+ */
 
 exports.user = (req, res) => {
   const id = req.params.id;
@@ -64,6 +75,10 @@ exports.user = (req, res) => {
 };
 
 // signup
+
+/**
+ * Signup user, Created user in DataBase with hash for password
+ */
 
 exports.signup = (req, res) => {
   bcrypt.hash(req.body.password, 13).then((hash) => {
@@ -89,6 +104,12 @@ exports.signup = (req, res) => {
 };
 
 // login
+
+/**
+ * Find the user with email,
+ * Compare Password with bcrypt
+ * and if right sign a token with jwt
+ */
 
 exports.login = (req, res, next) => {
   // find email for user
@@ -118,6 +139,10 @@ exports.login = (req, res, next) => {
     .catch((error) => res.status(500).json({ error }));
 };
 
+/**
+ * Change password of a user
+ */
+
 exports.changePassword = (req, res) => {
   const id = req.query.id;
 
@@ -126,6 +151,9 @@ exports.changePassword = (req, res) => {
 
   User.findByPk(req.auth.userId)
     .then((reqUser) => {
+      /**
+       * Check if right user or admin
+       */
       if (reqUser.id != id && reqUser.admin !== true) {
         res
           .status(403)
@@ -133,11 +161,17 @@ exports.changePassword = (req, res) => {
         return;
       }
       User.findByPk(id).then((user) => {
-        bcrypt.compare(oldPassword, user.password, (match, different) => {
+        /**
+         * Get user and compare passwords
+         */
+        bcrypt.compare(oldPassword, user.password, (match) => {
           // bcrypt send match when user password and old password match
           if (!match) {
             res.status(406).json({ error: "Passwords don't matchs" });
           } else {
+            /**
+             * If passwords matchs give a new hash for new password
+             */
             bcrypt.hash(newPassword, 13, function (err, bcryptNewPassword) {
               User.update(
                 { password: bcryptNewPassword },
@@ -157,6 +191,10 @@ exports.changePassword = (req, res) => {
     .catch(() => res.status(500).json({ error: "error" }));
 };
 
+/**
+ * Update user with the same process of update post
+ * with the possibility of give a profile picture which can add at the signup
+ */
 exports.updateOne = (req, res) => {
   const id = req.query.id;
   if (!req.body) {
@@ -168,6 +206,9 @@ exports.updateOne = (req, res) => {
 
   User.findByPk(req.auth.userId)
     .then((reqUser) => {
+      /**
+       * Check right user or admin
+       */
       if (reqUser.id != id && reqUser.admin != true) {
         res
           .status(403)
@@ -180,6 +221,10 @@ exports.updateOne = (req, res) => {
           res.status(404).send({ message: "user not found" });
           return;
         }
+
+        /**
+         * Check file for hold the error of multer if no file
+         */
 
         if (!req.file) {
           updateUser(undefined);
@@ -210,6 +255,10 @@ exports.updateOne = (req, res) => {
     .catch(() => res.status(500).json({ error: "error" }));
 };
 
+/**
+ * Delete one user with the same process of post
+ */
+
 exports.deleteOne = (req, res) => {
   const id = req.query.id;
 
@@ -225,6 +274,10 @@ exports.deleteOne = (req, res) => {
             return;
           }
 
+          /**
+           * Check right user or admin
+           */
+
           if (reqUser.id != id && reqUser.admin != true) {
             res.status(403).send({
               error: "you are not the good user for delete this user",
@@ -232,13 +285,21 @@ exports.deleteOne = (req, res) => {
             return;
           }
 
+          /**
+           * Delete User
+           */
+
           User.destroy({ where: { id: id } })
             .then(() => res.status(200).send({ message: "deleted user" }))
             .catch((error) =>
-              res
-                .status(400)
-                .json({ error: "can't delete the user with this id=" + id })
+              res.status(400).json({
+                error: error + "can't delete the user with this id=" + id,
+              })
             );
+
+          /**
+           * If user have a profile picture unlink of the server folder
+           */
 
           if (req.file) {
             deleteImgUser(req.file.filename);
@@ -252,9 +313,9 @@ exports.deleteOne = (req, res) => {
               User.destroy({ where: { id: id } })
                 .then(() => res.status(200).send({ message: "deleted user" }))
                 .catch((error) =>
-                  res
-                    .status(400)
-                    .json({ error: "can't delete the user with this id=" + id })
+                  res.status(400).json({
+                    error: error + "can't delete the user with this id=" + id,
+                  })
                 );
             });
           }

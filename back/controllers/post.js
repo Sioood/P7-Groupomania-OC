@@ -9,10 +9,18 @@ const fs = require("fs");
 // get all posts
 
 exports.getAll = (req, res) => {
+  /**
+   * get users with query parameters, can combine multiple or run with one
+   */
+
   let id = { [Op.not]: null };
   let UserId = { [Op.not]: null };
   let InCommentId = null;
   let limit = null;
+
+  /**
+   * check all query for implement in the where condition for sequelize
+   */
 
   //id
   if (req.query.id && req.query.id != "null") {
@@ -60,9 +68,9 @@ exports.getAll = (req, res) => {
     .then((data) => {
       res.send(data);
     })
-    .catch((err) => {
+    .catch((error) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while retrieving posts.",
+        message: error.message || "Some error occurred while retrieving posts.",
       });
     });
 };
@@ -78,6 +86,10 @@ exports.create = (req, res) => {
   }
 
   let file;
+
+  /**
+   * Check if file for hold the multer
+   */
 
   if (req.file == undefined) {
     file = null;
@@ -101,14 +113,14 @@ exports.create = (req, res) => {
     .then((data) => {
       res.status(200).send(data);
     })
-    .catch((err) => {
+    .catch((error) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while creating the post.",
+        message: error.message || "Some error occurred while creating the post.",
       });
     });
 };
 
-// Update?
+// Update
 
 exports.updateOne = (req, res) => {
   const id = req.query.id;
@@ -119,6 +131,10 @@ exports.updateOne = (req, res) => {
     return;
   }
 
+  /**
+   * Find the user request an update then the post
+   */
+
   User.findByPk(req.auth.userId)
     .then((user) => {
       Post.findByPk(id).then((post) => {
@@ -126,6 +142,11 @@ exports.updateOne = (req, res) => {
           res.status(404).send({ message: "post not found" });
           return;
         }
+
+        /**
+         * Check if right user or an admin, else drop error
+         */
+
         // // console.log(user.admin !== true);
         if (user.id != post.UserId && user.admin !== true) {
           res
@@ -164,9 +185,9 @@ exports.updateOne = (req, res) => {
               // });
             }
           })
-          .catch((err) => {
+          .catch((error) => {
             res.status(500).send({
-              error: "Error updating Post with id=" + id,
+              error: error + "Error updating Post with id=" + id,
             });
           });
       });
@@ -179,6 +200,11 @@ exports.updateOne = (req, res) => {
 exports.deleteOne = (req, res) => {
   const id = req.query.id;
 
+  /**
+   * Same process of update one
+   * Find the user request an update then the post
+   */
+
   User.findByPk(req.auth.userId)
     .then((user) => {
       Post.findByPk(id).then((post) => {
@@ -187,6 +213,12 @@ exports.deleteOne = (req, res) => {
           res.status(404).send({ message: "post not found" });
           return;
         }
+
+        /**
+         * Same process of update one
+         * Check if user request is admin or is the user created the post
+         */
+
         // // console.log(user.admin !== true);
         if (user.id != post.UserId && user.admin !== true) {
           res
@@ -204,6 +236,10 @@ exports.deleteOne = (req, res) => {
                 .json({ error: "can't delete the post with this id=" + id })
             );
         }
+
+        /**
+         * Check if the post contain an image, if yes unlink of server folder
+         */
 
         // delete file
         if (post.imgUrl) {

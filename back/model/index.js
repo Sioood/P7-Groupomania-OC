@@ -29,7 +29,7 @@ db.user = require("./user")(sequelize, Sequelize);
 db.post = require("./post")(sequelize, Sequelize);
 module.exports = db;
 
-// had foreignKey to sql
+// had foreignKey to sql with cascade impact
 
 db.post.hasOne(db.post, {
   foreignKey: "InCommentId",

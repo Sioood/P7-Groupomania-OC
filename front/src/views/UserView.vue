@@ -90,6 +90,7 @@
           />
         </div>
       </div>
+      <h4 class="error-message">{{ errMessage }}</h4>
       <button @click.prevent="updateUser()" type="submit">Modifier</button>
     </form>
   </div>
@@ -109,6 +110,7 @@ export default {
   data() {
     return {
       me: localStorage.getItem("id"),
+      errMessage: "",
       form: false,
       userProfile: {},
       userName: undefined,
@@ -213,7 +215,17 @@ export default {
      * can save unecessary fetch
      */
     updateUser() {
+      /**
+      All Regex for secure inputs form
+      */
+
+      const regexMail = /([a-zA-Z0-9-_.]{5,})@([a-zA-Z]+)\.([a-zA-Z]{2,9})/;
+      // const regexPassword = /([a-zA-Z0-9-_.?!]{5,})/;
+      const regexText = /([a-zA-Z]{3,})/;
+
       let id = null;
+
+      // let reload = false;
 
       let form = new FormData();
 
@@ -223,13 +235,32 @@ export default {
         form.append("file", this.$refs.file.files[0]);
       }
       if (this.userName) {
-        form.append("name", this.userName);
+        if (this.userName.match(regexText)) {
+          form.append("name", this.userName);
+        } else {
+          this.errMessage =
+            "Veuillez seulement mettre du texte dans les champs : Nom & Prénom.";
+        }
       }
       if (this.userLastname) {
-        form.append("lastname", this.userLastname);
+        if (this.userName.match(regexText)) {
+          form.append("lastname", this.userLastname);
+        } else {
+          this.errMessage =
+            "Veuillez seulement mettre du texte dans les champs : Nom & Prénom.";
+        }
       }
       if (this.userEmail) {
-        form.append("email", this.userEmail);
+        if (this.userEmail.match(regexMail)) {
+          form.append("email", this.userEmail);
+        } else {
+          if (!this.errMessage) {
+            this.errMessage = "Veuillez rentrer une adresse email valide.";
+          } else {
+            this.errMessage =
+              this.errMessage + " Veuillez rentrer une adresse email valide.";
+          }
+        }
       }
       if (this.$refs.job.value) {
         form.append("job", this.userJob);
@@ -275,9 +306,9 @@ export default {
         });
       }
 
-      setTimeout(() => {
-        location.reload();
-      }, 100);
+      // setTimeout(() => {
+      //   location.reload();
+      // }, 100);
     },
   },
 };
@@ -476,6 +507,11 @@ input[type="file"]::-webkit-file-upload-button {
   display: flex;
   flex-direction: row;
   gap: 15px;
+}
+
+.error-message {
+  width: 80%;
+  color: var(--accent-color);
 }
 
 button[type="submit"] {
