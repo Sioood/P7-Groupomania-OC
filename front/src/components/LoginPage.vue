@@ -85,7 +85,7 @@ export default {
 
       const regexMail = /([a-zA-Z0-9-_.]{5,})@([a-zA-Z]+)\.([a-zA-Z]{2,9})/;
       const regexPassword = /([a-zA-Z0-9-_.?!]{5,})/;
-      const regexText = /([a-zA-Z]{3,})/;
+      const regexText = /([a-zA-Zàâäçéèêëîïôöùûüÿ]{3,})/;
 
       // empty validator for login inputs
       const emptyLogin = this.$refs.email.value && this.$refs.password.value;

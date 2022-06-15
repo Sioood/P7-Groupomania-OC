@@ -220,100 +220,210 @@ export default {
       */
 
       const regexMail = /([a-zA-Z0-9-_.]{5,})@([a-zA-Z]+)\.([a-zA-Z]{2,9})/;
-      // const regexPassword = /([a-zA-Z0-9-_.?!]{5,})/;
-      const regexText = /([a-zA-Z]{3,})/;
+      const regexPassword = /([a-zA-Z0-9-_.?!]{5,})/;
+      const regexText = /([a-zA-Zàâäçéèêëîïôöùûüÿ]{3,})/;
 
       let id = null;
 
-      // let reload = false;
+      const getId = () => {
+        if (router.currentRoute.path == "/me") {
+          id = this.$store.state.user.id;
+        } else if (router.currentRoute.path == "/user") {
+          id = router.currentRoute.query.id;
+        }
+        console.log(id);
+      };
+
+      getId();
 
       let form = new FormData();
 
       this.userJob = this.$refs.job.value;
 
-      // check if not empty for continue to match regex
+      /**
+       * Variable checker for inputs validation
+       */
 
-      // if not empty -> if match -> reload true
-      // if empty -> reload false, if don't match reload false
+      let checker = (arr) => arr.every((v) => v === true);
 
-      if (this.$refs.file.files[0]) {
-        form.append("file", this.$refs.file.files[0]);
-      }
-      if (this.userName) {
-        if (this.userName.match(regexText)) {
-          form.append("name", this.userName);
-        } else {
-          this.errMessage =
-            "Veuillez seulement mettre du texte dans les champs : Nom & Prénom.";
-        }
-      }
-      if (this.userLastname) {
-        if (this.userName.match(regexText)) {
-          form.append("lastname", this.userLastname);
-        } else {
-          this.errMessage =
-            "Veuillez seulement mettre du texte dans les champs : Nom & Prénom.";
-        }
-      }
-      if (this.userEmail) {
-        if (this.userEmail.match(regexMail)) {
-          form.append("email", this.userEmail);
-        } else {
-          if (!this.errMessage) {
-            this.errMessage = "Veuillez rentrer une adresse email valide.";
-          } else {
-            this.errMessage =
-              this.errMessage + " Veuillez rentrer une adresse email valide.";
+      let verifyInputs = () => {
+        let verifyInfoInputs = (file, name, lastname, email, job, id) => {
+          const inputsValidation = [];
+
+          /**
+           * If file include in form
+           */
+
+          if (file) {
+            form.append("file", file);
           }
-        }
-      }
-      if (this.$refs.job.value) {
-        form.append("job", this.userJob);
-      }
 
-      if (router.currentRoute.path == "/me") {
-        id = this.$store.state.user.id;
-      } else if (router.currentRoute.path == "/user") {
-        id = router.currentRoute.query.id;
-      }
+          /**
+           * Validator for name
+           */
 
-      if (
-        this.file ||
-        this.userName ||
-        this.userLastname ||
-        this.userEmail ||
-        this.userJob
-      ) {
-        fetch(`${this.$store.state.baseUrl}/api/auth/user/update?id=${id}`, {
-          method: "PUT",
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
+          if (name) {
+            if (name.match(regexText)) {
+              form.append("name", name);
+              inputsValidation.push(true);
+            } else {
+              inputsValidation.push(false);
+              this.errMessage =
+                "Veuillez seulement mettre du texte dans les champs : Nom & Prénom. ";
+            }
+          }
+
+          /**
+           * Validator for lastname
+           */
+
+          if (lastname) {
+            if (lastname.match(regexText)) {
+              form.append("lastname", lastname);
+              inputsValidation.push(true);
+            } else {
+              inputsValidation.push(false);
+              this.errMessage =
+                "Veuillez seulement mettre du texte dans les champs : Nom & Prénom. ";
+            }
+          }
+
+          /**
+           * Validator for email
+           */
+
+          if (email) {
+            if (email.match(regexMail)) {
+              form.append("email", email);
+              inputsValidation.push(true);
+            } else {
+              inputsValidation.push(false);
+              if (!this.errMessage) {
+                this.errMessage = "Veuillez rentrer une adresse email valide.";
+              } else {
+                this.errMessage =
+                  this.errMessage +
+                  "Veuillez rentrer une adresse email valide. ";
+              }
+            }
+          }
+
+          /**
+           * If job include in form
+           */
+
+          if (job) {
+            form.append("job", job);
+          }
+
+          /**
+           * Check if in validation have an error(false) if not fetch update
+           */
+
+          if (inputsValidation.length > 0) {
+            if (checker(inputsValidation) === true) {
+              if (
+                this.file ||
+                this.userName ||
+                this.userLastname ||
+                this.userEmail ||
+                this.userJob
+              ) {
+                fetch(
+                  `${this.$store.state.baseUrl}/api/auth/user/update?id=${id}`,
+                  {
+                    method: "PUT",
+                    headers: {
+                      Authorization: "Bearer " + localStorage.getItem("token"),
+                    },
+                    body: form,
+                  }
+                );
+              }
+              setTimeout(() => {
+                location.reload();
+              }, 100);
+            }
+          }
+        };
+
+        verifyInfoInputs(
+          this.$refs.file.files[0],
+          this.userName,
+          this.userLastname,
+          this.userEmail,
+          this.userJob,
+          id
+        );
+
+        let verifyPasswordInputs = (password) => {
+          const inputsValidation = [];
+
+          /**
+           * Validator for old password
+           */
+
+          if (password.oldPassword) {
+            if (password.oldPassword.match(regexPassword)) {
+              inputsValidation.push(true);
+            } else {
+              inputsValidation.push(false);
+            }
+          }
+
+          /**
+           * Validator for new password
+           */
+
+          if (password.newPassword) {
+            if (password.newPassword.match(regexPassword)) {
+              inputsValidation.push(true);
+            } else {
+              inputsValidation.push(false);
+            }
+          }
+
+          /**
+           * Check if in validation have an error(false) if not fetch update
+           */
+
+          if (inputsValidation.length > 0) {
+            if (checker(inputsValidation) === true) {
+              if (password.oldPassword && password.newPassword) {
+                fetch(
+                  `${this.$store.state.baseUrl}/api/auth/user/password?id=${id}`,
+                  {
+                    method: "PUT",
+                    headers: {
+                      Authorization: "Bearer " + localStorage.getItem("token"),
+                      Accept: "application/json",
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(password),
+                  }
+                );
+              }
+              setTimeout(() => {
+                location.reload();
+              }, 100);
+            } else {
+              this.errMessage =
+                this.errMessage +
+                "Veuillez rentrer un mot de passe valide. Le mot de passe peut contenir : (Lettres, Chiffres et Caractères spéciaux correspondants : -_!.?)";
+            }
+          }
+        };
+
+        verifyPasswordInputs(
+          {
+            oldPassword: this.userOldPassword,
+            newPassword: this.userNewPassword,
           },
-          body: form,
-        });
-      }
-
-      // password
-      let password = {
-        oldPassword: this.userOldPassword,
-        newPassword: this.userNewPassword,
+          this.errMessage
+        );
       };
 
-      if (password.oldPassword && password.newPassword) {
-        fetch(`${this.$store.state.baseUrl}/api/auth/user/password?id=${id}`, {
-          method: "PUT",
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(password),
-        });
-      }
-
-      // setTimeout(() => {
-      //   location.reload();
-      // }, 100);
+      verifyInputs();
     },
   },
 };
