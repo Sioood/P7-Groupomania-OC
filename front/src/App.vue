@@ -28,7 +28,9 @@ export default {
     /**
      * Check Token at creation
      */
-    this.$store.dispatch("checkToken");
+    if (router.currentRoute.path != "/auth") {
+      this.$store.dispatch("checkToken");
+    }
     // console.log("created");
   },
   beforeUpdate() {
@@ -36,9 +38,9 @@ export default {
     if (router.currentRoute.path == "/auth") {
       this.nav = false;
     } else {
+      this.$store.dispatch("checkToken");
       this.nav = true;
     }
-    this.$store.dispatch("checkToken");
     // console.log("beforeUpdate");
   },
   methods: {

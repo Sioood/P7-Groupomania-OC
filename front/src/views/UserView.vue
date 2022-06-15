@@ -231,6 +231,11 @@ export default {
 
       this.userJob = this.$refs.job.value;
 
+      // check if not empty for continue to match regex
+
+      // if not empty -> if match -> reload true
+      // if empty -> reload false, if don't match reload false
+
       if (this.$refs.file.files[0]) {
         form.append("file", this.$refs.file.files[0]);
       }
