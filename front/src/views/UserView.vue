@@ -256,6 +256,7 @@ export default {
 
           if (file) {
             form.append("file", file);
+            inputsValidation.push(true);
           }
 
           /**
